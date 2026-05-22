@@ -1,0 +1,78 @@
+---
+import { siteConfig } from '@/site-config'
+
+export interface Props {
+  type?: 'website' | 'article'
+  title?: string
+  description?: string
+  url?: string
+  image?: string
+  datePublished?: string
+  dateModified?: string
+  author?: string
+  tags?: string[]
+}
+
+const {
+  type = 'website',
+  title = siteConfig.title,
+  description = siteConfig.description,
+  url,
+  image,
+  datePublished,
+  dateModified,
+  author = siteConfig.author,
+  tags = [],
+} = Astro.props
+
+const siteUrl = Astro.site?.toString() || 'https://aitoolpulse.pages.dev'
+const pageUrl = url || siteUrl
+const imageUrl = image ? new URL(image, siteUrl).toString() : `${siteUrl}/open-graph.png`
+
+// Website Schema
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": siteConfig.title,
+  "description": siteConfig.description,
+  "url": siteUrl,
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": `${siteUrl}/search?q={search_term_string}`,
+    "query-input": "required name=search_term_string"
+  }
+}
+
+// Article Schema
+const articleSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": description,
+  "url": pageUrl,
+  "image": imageUrl,
+  "author": {
+    "@type": "Person",
+    "name": author
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": siteConfig.title,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/favicon.ico`
+    }
+  },
+  ...(datePublished && { "datePublished": datePublished }),
+  ...(dateModified && { "dateModified": dateModified }),
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": pageUrl
+  },
+  "keywords": tags.join(', ')
+}
+
+const schema = type === 'article' ? articleSchema : websiteSchema
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} is:inline />

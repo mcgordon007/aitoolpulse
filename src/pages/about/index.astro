@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@/layouts/BaseLayout'
+---
+
+<BaseLayout title="About">
+  <main class="space-y-10">
+    <section class="flex flex-wrap md:flex-nowrap items-center">
+      <section class="space-y-5">
+        <span class="font-semibold">Welcome to</span>
+        <h1 class="text-3xl font-bold">AiToolPulse</h1>
+        <article class="md:w-8/12 text-slate-500 space-y-2">
+          <p>
+            AiToolPulse is your go-to source for the latest AI tools and
+            innovations. We track the rapidly evolving landscape of artificial
+            intelligence, bringing you real-time updates on the hottest tools,
+            in-depth reviews, and actionable insights.
+          </p>
+          <p>
+            From cutting-edge language models and image generators to
+            productivity boosters and developer utilities — if it's AI-powered
+            and trending, you'll find it here first.
+          </p>
+          <p>Stay ahead of the curve. Stay powered by AI.</p>
+        </article>
+
+        <div class="flex gap-3">
+          <button
+            class="bg-grayDeep text-white ring-2 font-semibold py-2 px-4 rounded-xl"
+          >
+            <a href="/"> Explore Posts </a>
+          </button>
+          <button
+            class="ring-2 ring-grayDeep font-semibold py-2 px-4 rounded-xl"
+          >
+            <a href="/tags"> Browse by Tag </a>
+          </button>
+        </div>
+      </section>
+    </section>
+
+    <hr />
+
+    <section class="space-y-4">
+      <h2 class="text-2xl font-bold">What We Cover</h2>
+      <ul class="list-disc list-inside space-y-2 text-slate-500">
+        <li><strong>AI Tool Reviews</strong> — Hands-on analysis of the latest AI-powered tools</li>
+        <li><strong>Industry News</strong> — Breaking updates from the AI ecosystem</li>
+        <li><strong>Tutorials & Guides</strong> — How to make the most of AI tools</li>
+        <li><strong>Comparisons</strong> — Head-to-head breakdowns of competing tools</li>
+        <li><strong>Trending Picks</strong> — Weekly roundups of the hottest AI tools</li>
+      </ul>
+    </section>
+  </main>
+</BaseLayout>
