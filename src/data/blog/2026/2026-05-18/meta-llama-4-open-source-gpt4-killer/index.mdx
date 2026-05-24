@@ -1,6 +1,6 @@
 ---
 title: "Meta Llama 4: The Open-Source GPT-4o Killer Is Here"
-description: "Meta's Llama 4 family тА?Scout, Maverick, and Behemoth тА?outperforms GPT-4o with a fraction of the compute. Here's why it changes everything for open-source AI."
+description: "Meta's Llama 4 family —Scout, Maverick, and Behemoth —outperforms GPT-4o with a fraction of the compute. Here's why it changes everything for open-source AI."
 pubDate: '2026-05-18'
 heroImage: 'images/llama-4-family.png'
 tags: ['Meta', 'Llama 4', 'Open Source', 'LLM']
@@ -8,15 +8,15 @@ tags: ['Meta', 'Llama 4', 'Open Source', 'LLM']
 
 ![Meta Llama 4 Family](/posts/2026/2026-05-18/meta-llama-4-open-source-gpt4-killer/images/llama-4-family.png)
 
-*By crayfish ┬╖ May 18, 2026*
+*By crayfish · May 18, 2026*
 
 ---
 
 When Meta dropped Llama 4 in April 2025, the AI world expected another incremental update. What arrived instead was a reckoning.
 
-Three models in the family тА?Llama 4 Scout, Llama 4 Maverick, and Llama 4 Behemoth тА?and the headline number that made every developer sit up: **Maverick outperforms GPT-4o and Gemini 2.0 Flash across coding, reasoning, multilingual, and image benchmarks**, while running on fewer than half the active parameters.
+Three models in the family —Llama 4 Scout, Llama 4 Maverick, and Llama 4 Behemoth —and the headline number that made every developer sit up: **Maverick outperforms GPT-4o and Gemini 2.0 Flash across coding, reasoning, multilingual, and image benchmarks**, while running on fewer than half the active parameters.
 
-This isn't a close race. According to Meta's own benchmarks, Maverick тА?with 17 billion active parameters тА?beats models that require significantly more compute. The secret? A brand-new Mixture-of-Experts (MoE) architecture that activates only the neurons needed for each specific task, rather than firing the entire model every time.
+This isn't a close race. According to Meta's own benchmarks, Maverick —with 17 billion active parameters —beats models that require significantly more compute. The secret? A brand-new Mixture-of-Experts (MoE) architecture that activates only the neurons needed for each specific task, rather than firing the entire model every time.
 
 ---
 
@@ -24,15 +24,15 @@ This isn't a close race. According to Meta's own benchmarks, Maverick тА?with 
 
 ### The Three-Tier Family
 
-**Llama 4 Scout** is the efficiency play. Seventeen billion active parameters, fits on a single NVIDIA H100 GPU, and carries a **10 million token context window** тА?that's roughly 20 average novels in memory at once. For developers building retrieval-augmented workflows or running large document analysis, this alone is worth the switch.
+**Llama 4 Scout** is the efficiency play. Seventeen billion active parameters, fits on a single NVIDIA H100 GPU, and carries a **10 million token context window** —that's roughly 20 average novels in memory at once. For developers building retrieval-augmented workflows or running large document analysis, this alone is worth the switch.
 
-**Llama 4 Maverick** is the flagship. Same 17B active parameter count but with 128 experts in the MoE routing layer. This is the model Meta is positioning against GPT-4o тА?and the benchmarks suggest it actually wins. It's available now on llama.com and Hugging Face.
+**Llama 4 Maverick** is the flagship. Same 17B active parameter count but with 128 experts in the MoE routing layer. This is the model Meta is positioning against GPT-4o —and the benchmarks suggest it actually wins. It's available now on llama.com and Hugging Face.
 
 **Llama 4 Behemoth** is the teacher model. 288 billion active parameters, distilled down to power Scout and Maverick. Behemoth outperforms GPT-4.5, Claude Sonnet 3.7, and Gemini 2.0 Pro on several STEM benchmarks. It's still in training, but the knowledge has already trickled down.
 
 ### MoE Architecture: Why It Matters
 
-Traditional language models use every neuron for every query тА?expensive and energy-intensive. MoE models route queries only to relevant "expert" subnetworks. Llama 4 Maverick has 128 experts but only activates a subset per token. The result: GPT-4o-level performance at a fraction of the inference cost.
+Traditional language models use every neuron for every query —expensive and energy-intensive. MoE models route queries only to relevant "expert" subnetworks. Llama 4 Maverick has 128 experts but only activates a subset per token. The result: GPT-4o-level performance at a fraction of the inference cost.
 
 For teams running open-source models in production, this directly translates to **lower API bills and faster inference times** without sacrificing quality.
 
@@ -46,11 +46,11 @@ Maverick's coding benchmarks beat GPT-4o. If you're running self-hosted code rev
 
 ### Long-Context Analysis
 
-Scout's 10M token context window makes it practical for legal document review, large codebase understanding, and research synthesis. The entire Python standard library fits in a single context window тА?that's not a gimmick, that's a workflow change.
+Scout's 10M token context window makes it practical for legal document review, large codebase understanding, and research synthesis. The entire Python standard library fits in a single context window —that's not a gimmick, that's a workflow change.
 
 ### Multimodal Workflows
 
-Both Scout and Maverick are natively multimodal тА?text, images, and audio in, text out. For developers building document understanding pipelines or image captioning systems, this is a free upgrade from models that required separate vision adapters.
+Both Scout and Maverick are natively multimodal —text, images, and audio in, text out. For developers building document understanding pipelines or image captioning systems, this is a free upgrade from models that required separate vision adapters.
 
 ---
 
@@ -69,18 +69,18 @@ For comparison, here's the quick summary:
 
 | Model | Active Params | Context | Multimodal | Best For |
 |---|---|---|---|---|
-| Llama 4 Scout | 17B | 10M tokens | тЬ?| Long document analysis, retrieval |
-| Llama 4 Maverick | 17B (128E) | ~128K | тЬ?| Coding, reasoning, general tasks |
-| Llama 4 Behemoth | 288B | ~128K | тЬ?| Research, complex STEM tasks |
+| Llama 4 Scout | 17B | 10M tokens | ✓| Long document analysis, retrieval |
+| Llama 4 Maverick | 17B (128E) | ~128K | ✓| Coding, reasoning, general tasks |
+| Llama 4 Behemoth | 288B | ~128K | ✓| Research, complex STEM tasks |
 
 ---
 
 ## Why This Matters for the AI Landscape
 
-Meta has made a clear strategic bet: open-weight models that match or beat proprietary leaders at lower cost. With Llama 4, that bet paid off. The download numbers reflect it тА?Llama models have crossed 1 billion downloads, making it the de facto standard for open-source AI.
+Meta has made a clear strategic bet: open-weight models that match or beat proprietary leaders at lower cost. With Llama 4, that bet paid off. The download numbers reflect it —Llama models have crossed 1 billion downloads, making it the de facto standard for open-source AI.
 
 For developers, the implication is simple: you no longer need to choose between frontier performance and open deployment. Llama 4 Maverick is available now, beats GPT-4o on most benchmarks, and costs less to run.
 
 ---
 
-*Source: ai.meta.com/blog/llama-4-multimodal-intelligence ┬╖ May 18, 2026*
+*Source: ai.meta.com/blog/llama-4-multimodal-intelligence · May 18, 2026*
