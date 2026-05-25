@@ -25,7 +25,7 @@ const {
   tags = [],
 } = Astro.props
 
-const siteUrl = Astro.site?.toString() || 'https://aitoolpulse.pages.dev'
+const siteUrl = Astro.site?.toString() || 'https://09091010.xyz'
 const pageUrl = url || siteUrl
 const imageUrl = image ? new URL(image, siteUrl).toString() : `${siteUrl}/open-graph.png`
 
@@ -36,14 +36,24 @@ const websiteSchema = {
   "name": siteConfig.title,
   "description": siteConfig.description,
   "url": siteUrl,
+  "inLanguage": "en",
   "potentialAction": {
     "@type": "SearchAction",
     "target": `${siteUrl}/search?q={search_term_string}`,
     "query-input": "required name=search_term_string"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": siteConfig.title,
+    "url": siteUrl,
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${siteUrl}/favicon.ico`
+    }
   }
 }
 
-// Article Schema
+// Article Schema (enhanced for GEO)
 const articleSchema = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
@@ -51,13 +61,16 @@ const articleSchema = {
   "description": description,
   "url": pageUrl,
   "image": imageUrl,
+  "inLanguage": "en",
   "author": {
-    "@type": "Person",
-    "name": author
+    "@type": "Organization",
+    "name": author,
+    "url": siteUrl
   },
   "publisher": {
     "@type": "Organization",
     "name": siteConfig.title,
+    "url": siteUrl,
     "logo": {
       "@type": "ImageObject",
       "url": `${siteUrl}/favicon.ico`
@@ -69,7 +82,11 @@ const articleSchema = {
     "@type": "WebPage",
     "@id": pageUrl
   },
-  "keywords": tags.join(', ')
+  "keywords": tags.join(', '),
+  "articleSection": tags[0] || "AI Tools",
+  "wordCount": undefined,
+  "isAccessibleForFree": true,
+  "license": "https://creativecommons.org/licenses/by/4.0/"
 }
 
 const schema = type === 'article' ? articleSchema : websiteSchema
