@@ -25,10 +25,12 @@ const lang = getLangFromUrl(Astro.url)
 const t = useTranslations(lang)
 
 // Resolve heroImage: handle both relative paths (images/xxx) and absolute paths (/posts/...)
+// Strip trailing /index from post.id (Astro glob loader includes it)
+const cleanId = id.replace(/\/index$/, '')
 const heroSrc = heroImage 
   ? heroImage.startsWith('/') 
     ? heroImage 
-    : `/posts/${id}/${heroImage}`
+    : `/posts/${cleanId}/${heroImage}`
   : ''
 
 // Get related articles based on tags
@@ -105,7 +107,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href
             >
               {post.data.heroImage && (
                 <OptimizedImage 
-                  src={`/posts/${post.id}/${post.data.heroImage}`}
+                  src={`/posts/${post.id.replace(/\/index$/, '')}/${post.data.heroImage}`}
                   loading="lazy"
                   class="w-full h-32 object-cover rounded-lg mb-3"
                   alt={post.data.title}

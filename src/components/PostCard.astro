@@ -27,10 +27,12 @@ const {
 const t = useTranslations('en')
 
 // Resolve heroImage: handle both relative paths (images/xxx) and absolute paths (/posts/...)
+// Strip trailing /index from post.id (Astro glob loader includes it)
+const cleanId = id.replace(/\/index$/, '')
 const heroSrc = heroImage 
   ? heroImage.startsWith('/') 
     ? heroImage 
-    : `/posts/${id}/${heroImage}`
+    : `/posts/${cleanId}/${heroImage}`
   : ''
 ---
 
