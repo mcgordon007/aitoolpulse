@@ -54,7 +54,7 @@ const getColor = (index: number) => tagColors[index % tagColors.length]
               <a
                 href={`/tags/${encodeURIComponent(tag.name.toLowerCase())}`}
                 class="tag-card"
-                style={`--color: ${getColor(index)}`}
+                style={`background: ${getColor(index)}; color: #ffffff;`}
               >
                 <span class="tag-name">{tag.name}</span>
                 <span class="tag-count">{tag.count} {tag.count === 1 ? 'article' : 'articles'}</span>
@@ -139,7 +139,6 @@ const getColor = (index: number) => tagColors[index % tagColors.length]
     justify-content: space-between;
     padding: 0.875rem 1rem;
     border-radius: 10px;
-    background: linear-gradient(135deg, var(--color) 0%, var(--color)dd 100%);
     color: #ffffff;
     text-decoration: none;
     transition: transform 0.2s, box-shadow 0.2s;
