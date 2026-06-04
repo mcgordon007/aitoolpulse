@@ -10,13 +10,8 @@ interface Props {
 
 const { tags } = Astro.props;
 
-const maxCount = Math.max(...tags.map(t => t.count));
-const minCount = Math.min(...tags.map(t => t.count));
-
-const getTagSize = (count: number) => {
-  if (maxCount === minCount) return 13;
-  return 11 + (count - minCount) / (maxCount - minCount) * 7;
-};
+// Sort by count descending and take top 12
+const sortedTags = [...tags].sort((a, b) => b.count - a.count).slice(0, 12);
 
 const tagColors = [
   '#60a5fa', '#818cf8', '#a78bfa', '#c084fc', '#e879f9',
@@ -28,260 +23,187 @@ const getColor = (index: number) => tagColors[index % tagColors.length];
 ---
 
 <div class="tag-cloud-wrapper">
-  <div class="search-box">
-    <input type="text" id="tag-search-input" placeholder="Search tags..." />
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
+  <div class="section-header">
+    <h2 class="section-title">Popular Tags</h2>
+    <span class="tag-count">{sortedTags.length} of {tags.length} tags</span>
   </div>
-
-  <div class="sphere-container" id="sphere-container">
-    {tags.map((tag, index) => (
-      <a
-        href={`/tags/${encodeURIComponent(tag.name.toLowerCase())}`}
-        class="sphere-tag"
-        data-tag={tag.name.toLowerCase()}
-        data-index={index}
-        style={`--color: ${getColor(index)}; --size: ${getTagSize(tag.count)}px;`}
-      >
-        {tag.name}
-        <span class="tag-badge">{tag.count}</span>
-      </a>
-    ))}
+  
+  <div class="scroll-container">
+    <div class="tags-scroll">
+      {sortedTags.map((tag, index) => (
+        <a
+          href={`/tags/${encodeURIComponent(tag.name.toLowerCase())}`}
+          class="tag-item"
+          style={`--color: ${getColor(index)}`}
+        >
+          <span class="tag-name">{tag.name}</span>
+          <span class="tag-badge">{tag.count}</span>
+        </a>
+      ))}
+    </div>
   </div>
-
-  <p id="no-results-msg" class="no-results" style="display:none;">No tags found.</p>
+  
+  <div class="view-all-section">
+    <a href="/tags/all" class="view-all-link">
+      <span>View All Tags</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
 </div>
 
 <style>
   .tag-cloud-wrapper {
     width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem 0 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
   }
 
-  .search-box {
-    position: relative;
-    width: 100%;
-    max-width: 360px;
-    margin-bottom: 2rem;
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 0 0.5rem;
   }
-  .search-box input {
-    width: 100%;
-    padding: 10px 16px 10px 42px;
-    border-radius: 9999px;
-    border: 1px solid #374151;
-    background: #1f2937;
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
     color: #f3f4f6;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
   }
-  .search-box input:focus {
-    border-color: #60a5fa;
-    box-shadow: 0 0 0 3px rgba(96,165,250,0.2);
-  }
-  .search-box svg {
-    position: absolute;
-    left: 14px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 18px;
-    height: 18px;
+
+  .tag-count {
+    font-size: 0.875rem;
     color: #9ca3af;
+  }
+
+  .scroll-container {
+    position: relative;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+  }
+
+  .scroll-container::before,
+  .scroll-container::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 40px;
+    z-index: 10;
     pointer-events: none;
   }
 
-  .sphere-container {
-    position: relative;
-    width: 420px;
-    height: 420px;
+  .scroll-container::before {
+    left: 0;
+    background: linear-gradient(to right, #111827, transparent);
   }
 
-  .sphere-tag {
-    position: absolute;
+  .scroll-container::after {
+    right: 0;
+    background: linear-gradient(to left, #111827, transparent);
+  }
+
+  .tags-scroll {
+    display: flex;
+    gap: 0.75rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 1rem 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: #4b5563 #1f2937;
+  }
+
+  .tags-scroll::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .tags-scroll::-webkit-scrollbar-track {
+    background: #1f2937;
+    border-radius: 3px;
+  }
+
+  .tags-scroll::-webkit-scrollbar-thumb {
+    background: #4b5563;
+    border-radius: 3px;
+  }
+
+  .tags-scroll::-webkit-scrollbar-thumb:hover {
+    background: #6b7280;
+  }
+
+  .tag-item {
+    flex-shrink: 0;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
-    padding: 6px 14px;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
     border-radius: 9999px;
     background: var(--color);
     color: #fff;
-    font-size: var(--size);
+    font-size: 0.875rem;
     font-weight: 600;
-    white-space: nowrap;
-    cursor: pointer;
     text-decoration: none;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-    user-select: none;
-    pointer-events: auto;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    opacity: 0.9;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
   }
-  .sphere-tag.hidden-tag {
-    display: none;
+
+  .tag-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+    filter: brightness(1.1);
   }
 
   .tag-badge {
-    font-size: 0.68em;
+    font-size: 0.75rem;
     background: rgba(255,255,255,0.2);
-    padding: 1px 7px;
+    padding: 0.125rem 0.5rem;
     border-radius: 9999px;
-    line-height: 1.4;
   }
 
-  .no-results {
-    color: #6b7280;
-    font-size: 0.95rem;
-    margin-top: 1rem;
+  .view-all-section {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+  }
+
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    background: #374151;
+    color: #f3f4f6;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .view-all-link:hover {
+    background: #4b5563;
+    transform: translateY(-1px);
+  }
+
+  .view-all-link svg {
+    width: 18px;
+    height: 18px;
   }
 
   @media (max-width: 640px) {
-    .sphere-container { 
-      width: 100%; 
-      height: 350px; 
-      max-width: 350px;
+    .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.5rem;
     }
-    .sphere-tag { 
-      font-size: calc(var(--size) * 0.75); 
-      padding: 4px 10px; 
-    }
-  }
 
-  @media (max-width: 400px) {
-    .sphere-container { 
-      height: 300px; 
-      max-width: 300px;
-    }
-    .sphere-tag { 
-      font-size: calc(var(--size) * 0.65); 
-      padding: 3px 8px; 
-    }
-    .search-box {
-      padding: 0 1rem;
+    .tag-item {
+      padding: 0.5rem 0.875rem;
+      font-size: 0.8rem;
     }
   }
 </style>
-
-<script define:vars={{ tags }}>
-  (function () {
-    const container = document.getElementById('sphere-container');
-    const searchInput = document.getElementById('tag-search-input');
-    const noResults = document.getElementById('no-results-msg');
-    const tagEls = Array.from(container.querySelectorAll('.sphere-tag'));
-
-    const N = tagEls.length;
-    const radius = container.offsetWidth / 2 - 50;
-    const points = [];
-
-    for (let i = 0; i < N; i++) {
-      const phi = Math.acos(1 - 2 * (i + 0.5) / N);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      points.push({
-        x: Math.cos(theta) * Math.sin(phi),
-        y: Math.cos(phi),
-        z: Math.sin(theta) * Math.sin(phi),
-      });
-    }
-
-    let angleX = 0;
-    let angleY = 0;
-    const speedX = 0.0015;
-    const speedY = 0.003;
-    let paused = false;
-
-    // Track hovered element index so render() skips it
-    let hoveredIdx = -1;
-
-    function rotatePoint(p, ax, ay) {
-      let x1 = p.x * Math.cos(ay) - p.z * Math.sin(ay);
-      let z1 = p.x * Math.sin(ay) + p.z * Math.cos(ay);
-      let y1 = p.y * Math.cos(ax) - z1 * Math.sin(ax);
-      let z2 = p.y * Math.sin(ax) + z1 * Math.cos(ax);
-      return { x: x1, y: y1, z: z2 };
-    }
-
-    function render() {
-      for (let i = 0; i < N; i++) {
-        const el = tagEls[i];
-        if (el.classList.contains('hidden-tag')) continue;
-
-        // Skip hovered tag — keep its own JS-applied transform
-        if (i === hoveredIdx) continue;
-
-        const p = rotatePoint(points[i], angleX, angleY);
-        const scale = (p.z + 1.5) / 2.5;
-        const opacity = 0.3 + 0.7 * ((p.z + 1) / 2);
-        const px = p.x * radius;
-        const py = p.y * radius;
-
-        el.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px)) scale(${scale})`;
-        el.style.opacity = opacity;
-        el.style.zIndex = Math.round(scale * 100);
-      }
-    }
-
-    function tick() {
-      if (!paused) {
-        angleX += speedX;
-        angleY += speedY;
-      }
-      render();
-      requestAnimationFrame(tick);
-    }
-
-    // Hover events — apply/clear transform directly via JS
-    tagEls.forEach((el, i) => {
-      el.addEventListener('mouseenter', () => {
-        hoveredIdx = i;
-        paused = true;
-
-        // Get current (frozen) position from the last render
-        const p = rotatePoint(points[i], angleX, angleY);
-        const baseScale = (p.z + 1.5) / 2.5;
-        const px = p.x * radius;
-        const py = p.y * radius;
-
-        el.style.transform = `translate(calc(-50% + ${px}px), calc(-50% + ${py}px)) scale(${baseScale * 1.5})`;
-        el.style.opacity = '1';
-        el.style.zIndex = '9999';
-        el.style.boxShadow = '0 0 0 3px rgba(255,255,255,0.35), 0 8px 30px rgba(0,0,0,0.6)';
-        el.style.filter = 'brightness(1.15)';
-      });
-
-      el.addEventListener('mouseleave', () => {
-        hoveredIdx = -1;
-        paused = false;
-        el.style.boxShadow = '0 2px 10px rgba(0,0,0,0.4)';
-        el.style.filter = 'none';
-      });
-    });
-
-    container.addEventListener('mouseenter', () => { paused = true; });
-    container.addEventListener('mouseleave', () => {
-      if (hoveredIdx === -1) paused = false;
-    });
-
-    searchInput.addEventListener('input', () => {
-      const q = searchInput.value.toLowerCase().trim();
-      let visible = 0;
-      tagEls.forEach((el) => {
-        const name = el.getAttribute('data-tag');
-        if (!q || name.includes(q)) {
-          el.classList.remove('hidden-tag');
-          visible++;
-        } else {
-          el.classList.add('hidden-tag');
-        }
-      });
-      noResults.style.display = visible === 0 ? 'block' : 'none';
-      container.style.display = visible === 0 ? 'none' : 'block';
-    });
-
-    tick();
-  })();
-</script>
