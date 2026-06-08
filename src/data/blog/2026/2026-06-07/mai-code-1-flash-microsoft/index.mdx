@@ -1,0 +1,91 @@
+---
+title: "Microsoft's MAI-Code-1-Flash: The First AI Microsoft Built Without OpenAI"
+description: "Microsoft unveiled its own coding AI at Build 2026 — 5B active parameters, beats Claude Haiku 4.5 on every benchmark, and runs inside GitHub Copilot today. No OpenAI technology involved."
+pubDate: '2026-06-07'
+heroImage: 'images/image1.jpg'
+tags: ['Microsoft', 'MAI', 'GitHub Copilot', 'AI Coding', 'VS Code', 'Build 2026', 'Claude Haiku']
+---
+
+![Microsoft MAI-Code-1-Flash announcement at Build 2026, showcasing the first fully homegrown AI model from Microsoft](/posts/2026/2026-06-07/mai-code-1-flash-microsoft/images/image1.jpg)
+
+*By crayfish · June 07, 2026 · Category: AI Tools*
+
+---
+
+## The Model Microsoft Built Itself
+
+On June 2, 2026, at its annual Build conference, Microsoft unveiled something that would have been unthinkable just two years ago: a frontier AI model built entirely in-house, without a single line of OpenAI technology inside it. The model is called **MAI-Code-1-Flash**, and it represents a strategic shift that will reverberate across the entire AI industry.
+
+For years, Microsoft's AI strategy was synonymous with its partnership with OpenAI. The company invested $13 billion into OpenAI, integrated GPT models into every product from Word to Windows, and built its AI identity around that relationship. But MAI-Code-1-Flash signals that Microsoft is no longer content to be OpenAI's distribution partner. It wants to be a first-class AI model builder in its own right.
+
+The results speak for themselves. MAI-Code-1-Flash outperforms Claude Haiku 4.5 — widely regarded as the best small coding model available — on every major benchmark. And it does so while using significantly fewer tokens, at lower latency, and with better agentic behavior. This is not a research demo. It is a production model, available today inside GitHub Copilot.
+
+---
+
+## Architecture: Small but Mighty
+
+![Technical architecture diagram of MAI-Code-1-Flash showing its sparse MoE design with 137B total and 5B active parameters](/posts/2026/2026-06-07/mai-code-1-flash-microsoft/images/image2.jpg)
+
+MAI-Code-1-Flash uses a **sparse Mixture-of-Experts (MoE)** architecture with 137 billion total parameters but only 5 billion active parameters per inference pass. This design philosophy — large knowledge capacity, small computational footprint — is what makes the model both powerful and fast.
+
+The 5 billion active parameter count is deceptively modest. During each inference, the model routes the input through a gating network that selects the most relevant expert subnetworks from the full 137 billion parameter pool. The result is a model that carries the knowledge of a much larger system but runs with the speed and cost of a small one.
+
+One detail that sets MAI-Code-1-Flash apart from virtually every other frontier model is its training data. Microsoft trained MAI-Code-1-Flash exclusively on **commercially licensed data**. No scraped code from public repositories without consent. No ambiguous licensing situations. This is a model that enterprises can deploy without worrying about copyright exposure — a significant selling point in an industry increasingly haunted by legal questions around training data.
+
+The architecture also delivers a concrete practical advantage: MAI-Code-1-Flash uses **60% fewer tokens** than comparable models when solving difficult coding tasks. Fewer tokens means lower cost, lower latency, and faster time-to-answer. In a production coding environment where developers are waiting for AI responses dozens of times per day, that efficiency compounds rapidly.
+
+---
+
+## Benchmark Results: Beating Claude Haiku 4.5
+
+The benchmark numbers are where MAI-Code-1-Flash makes its strongest statement. Across three major coding benchmarks, it consistently outperforms Claude Haiku 4.5, which until now was considered the gold standard for small, fast coding models.
+
+**SWE-Bench Verified:** MAI-Code-1-Flash scores **71.6%**, compared to Claude Haiku 4.5's 66.6%. That is a **+5.0 percentage point** improvement, representing a meaningful jump in real-world software engineering task completion.
+
+**SWE-Bench Pro:** The gap widens significantly on the harder benchmark. MAI-Code-1-Flash achieves **51.2%** versus Claude Haiku 4.5's 35.2% — a staggering **+16.0 percentage point** lead. On complex, multi-file software engineering challenges, MAI-Code-1-Flash is in a different league.
+
+**Terminal Bench 2:** For command-line and terminal-based coding tasks, MAI-Code-1-Flash scores **54.8%** compared to Claude Haiku 4.5's 41.6%, a **+13.2 percentage point** advantage. This matters because terminal interaction is a core part of the developer workflow, and a model that excels here delivers immediate practical value.
+
+Beyond raw scores, developers who have used MAI-Code-1-Flash report three qualitative advantages. First, **lower latency** — responses come back noticeably faster, which matters when you are in a flow state. Second, **better agentic behavior** — the model knows when to stop, when to ask for clarification, and when to iterate. Third, **more concise outputs** — the model tends to produce shorter, more targeted responses rather than over-explaining.
+
+---
+
+## How to Use It Today
+
+![Screenshot of VS Code showing MAI Code 1 Flash selected in the GitHub Copilot model picker](/posts/2026/2026-06-07/mai-code-1-flash-microsoft/images/image3.jpg)
+
+MAI-Code-1-Flash is not a waitlist product or a limited beta. It is available right now inside GitHub Copilot, and enabling it takes less than two minutes.
+
+**Step 1:** Update VS Code to version 1.99 or later. The latest release includes the Copilot model selector that supports MAI models.
+
+**Step 2:** Open the Copilot Chat panel in VS Code. If you do not see it, press Ctrl+Shift+P and search for "GitHub Copilot: Chat."
+
+**Step 3:** Click the model selector dropdown at the top of the Copilot Chat panel. You will see "MAI Code 1 Flash" listed alongside the standard GPT models. Select it.
+
+That is it. From this point forward, your Copilot interactions will use MAI-Code-1-Flash by default. You can switch back to GPT-based models at any time through the same selector, allowing you to compare outputs side by side.
+
+For developers who prefer the API route, MAI-Code-1-Flash is available through the Azure AI endpoint with straightforward pricing: **$0.75 per million input tokens** and **$4.50 per million output tokens**. At 60% fewer tokens per task compared to competitors, the effective cost advantage is even larger than the per-token pricing suggests.
+
+---
+
+## The Growing MAI Family
+
+MAI-Code-1-Flash is not a one-off experiment. It is part of a broader model family that Microsoft is building under the MAI (Microsoft AI) brand. The family already includes several specialized models:
+
+- **MAI-Thinking-1:** A 35 billion parameter reasoning model designed for complex analytical tasks, mathematical problem-solving, and multi-step logical reasoning.
+- **MAI-Code-1-Flash:** The coding specialist described in this article, optimized for software engineering tasks with production-grade performance.
+- **MAI-Transcribe-1.5:** A speech-to-text model with improved accuracy across accents, languages, and noisy environments.
+- **MAI-Voice-2:** A text-to-speech model with natural prosody and emotional range for conversational applications.
+- **MAI-Image-2.5:** An image generation and understanding model for visual AI tasks.
+
+The message is clear: Microsoft is building a full-stack AI model portfolio that covers every major modality — text, code, voice, and image. Some of these models will compete with OpenAI's offerings. Others will complement them. But the strategic independence they represent is the real story.
+
+---
+
+## What This Means for the AI Landscape
+
+Microsoft's decision to build its own frontier models is one of the most significant strategic shifts in the AI industry this year. It does not mean the OpenAI partnership is ending — Microsoft has publicly stated that it remains committed to the relationship. But it does mean that Microsoft now has options, and options change power dynamics.
+
+For developers, MAI-Code-1-Flash is simply a better tool for certain tasks. The benchmark numbers are real, the latency improvement is noticeable, and the commercially clean training data removes a category of enterprise concern entirely. For the broader industry, it signals that the era of single-vendor AI dependency may be ending. Companies like Microsoft, Google, Meta, and Anthropic are all building their own model stacks, and the competition is producing better models at a pace that benefits everyone.
+
+The question is no longer whether Microsoft can build AI models without OpenAI. MAI-Code-1-Flash answers that question definitively. The question now is how far Microsoft will take this capability — and what it means for the companies that once had the field to themselves.
