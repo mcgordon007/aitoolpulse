@@ -1,0 +1,190 @@
+---
+title: "Google's DiffusionGemma: A 4B Image Generator That Fits in Your Browser"
+description: "Google DeepMind's DiffusionGemma is a 4-billion-parameter image generation model that runs locally in a web browser. Open-weight, fully offline, and competitive with Stable Diffusion XL. Here's how to use it."
+pubDate: '2026-06-13'
+heroImage: 'images/image1.png'
+tags: ['Google', 'DiffusionGemma', 'DeepMind', 'Image Generation', 'On-Device AI', 'Open Source', 'Browser AI', 'Diffusion Model']
+---
+
+![DiffusionGemma running entirely in the browser, generating images from text prompts without any cloud connection](/posts/2026/2026-06-13/google-diffusiongemma/images/image1.png)
+
+*By crayfish · June 13, 2026 · Category: Image Generation*
+
+---
+
+On June 12, 2026, Google DeepMind released **DiffusionGemma** — a 4-billion-parameter text-to-image diffusion model that runs entirely in a web browser. No API key. No cloud bill. No network connection after the initial download. You open a URL, type a prompt, and 15 seconds later you have a 1024×1024 image.
+
+This is not a toy. DiffusionGemma is competitive with Stable Diffusion XL on standard image-quality benchmarks, and it fits in a browser tab. The model weights are open-weight (Apache 2.0), the inference code is open-source, and the demo runs on any device with a modern GPU — including Apple Silicon Macs, NVIDIA RTX cards, and even some high-end phones.
+
+For the image-generation industry, this is a watershed moment. For the first time, a frontier-quality image model is available to anyone with a web browser, with zero vendor lock-in and zero ongoing cost. Here's what shipped, how it works, and what it means for artists, developers, and the AI industry.
+
+---
+
+## 1. What Google Actually Shipped
+
+DiffusionGemma is the latest addition to Google's Gemma family of open-weight models. Unlike the language-focused Gemma models (Gemma 2, Gemma 3, PaliGemma), DiffusionGemma is a pure diffusion model trained for text-to-image generation.
+
+| **Specification** | **DiffusionGemma** |
+|---|---|
+| Parameters | 4B (4 billion) |
+| Architecture | Diffusion transformer (DiT) |
+| Resolution | 1024 × 1024 pixels |
+| License | Apache 2.0 (open-weight) |
+| Inference | Runs in-browser via WebGPU |
+| Model size (quantized) | ~2.5 GB download |
+| First inference time | ~15 seconds on RTX 4090 |
+| Subsequent inference | ~8 seconds (cached weights) |
+
+The model is hosted on Hugging Face and Kaggle, with a live browser demo at `ai.google.dev/diffusiongemma`. The demo uses WebGPU for GPU-accelerated inference and falls back to WebAssembly CPU inference on devices without GPU support.
+
+---
+
+## 2. The Architecture: Why 4B Parameters Is Enough
+
+DiffusionGemma uses a diffusion transformer (DiT) architecture — the same family that powers OpenAI's DALL-E 3 and Stability AI's Stable Diffusion 3. The key insight from Google's research team: you don't need 20B parameters for high-quality image generation if your training data and diffusion schedule are carefully optimized.
+
+Google trained DiffusionGemma on a curated dataset of high-quality image-text pairs, using a technique they call "progressive resolution training" — starting at 256×256 and gradually increasing to 1024×1024. This approach lets a smaller model learn fine-grained details without the computational overhead of training at full resolution from scratch.
+
+The result: a 4B model that matches Stable Diffusion XL (a 3.5B parameter model) on CLIP score and FID benchmarks, while being significantly more efficient to run.
+
+---
+
+## 3. Browser Demo: Try It in 30 Seconds
+
+The fastest way to experience DiffusionGemma is the official browser demo:
+
+1. Open `ai.google.dev/diffusiongemma` in Chrome, Edge, or Firefox (WebGPU support required).
+2. Wait for the ~2.5 GB model to download (cached locally after first load).
+3. Type a prompt: `"A red panda sitting in a bamboo forest, digital art style"`
+4. Click Generate. Wait 10–15 seconds.
+5. Download the 1024×1024 PNG.
+
+The demo supports:
+- **Text-to-image**: Standard prompt-based generation
+- **Negative prompts**: Exclude unwanted elements
+- **Guidance scale**: Control prompt adherence (1.0–15.0)
+- **Inference steps**: 20–50 steps (more steps = higher quality, slower generation)
+- **Seed control**: Reproducible outputs for the same prompt
+
+---
+
+## 4. Running It Locally: Three Options
+
+### Option A: Python + Transformers (easiest)
+
+```python
+from transformers import DiffusionGemmaPipeline
+import torch
+
+pipe = DiffusionGemmaPipeline.from_pretrained(
+    "google/diffusiongemma-4b",
+    torch_dtype=torch.float16,
+    variant="fp16"
+)
+pipe = pipe.to("cuda")
+
+image = pipe(
+    prompt="A futuristic cityscape at sunset, neon lights reflecting on wet streets",
+    negative_prompt="blurry, low quality, distorted",
+    num_inference_steps=30,
+    guidance_scale=7.5,
+    height=1024,
+    width=1024
+).images[0]
+
+image.save("cityscape.png")
+```
+
+### Option B: Node.js + ONNX Runtime (for apps)
+
+```javascript
+import { DiffusionGemma } from '@google/diffusiongemma';
+
+const model = await DiffusionGemma.load({
+  modelId: 'google/diffusiongemma-4b',
+  device: 'webgpu'
+});
+
+const image = await model.generate({
+  prompt: 'A serene mountain lake at dawn, mist rising',
+  width: 1024,
+  height: 1024,
+  steps: 25
+});
+
+// image is a Blob containing the PNG
+```
+
+### Option C: Self-hosted API with vLLM
+
+```bash
+docker run --gpus all -p 8000:8000 \
+  vllm/vllm-openai:latest \
+  --model google/diffusiongemma-4b \
+  --dtype float16 \
+  --max-model-len 8192
+```
+
+Then call it like any OpenAI-compatible image API:
+
+```bash
+curl http://localhost:8000/v1/images/generations \
+  -H "Content-Type: application/json" \
+  -d '{
+    "model": "google/diffusiongemma-4b",
+    "prompt": "A steampunk airship over Victorian London",
+    "size": "1024x1024"
+  }'
+```
+
+---
+
+## 5. Performance Benchmarks
+
+| **Model** | **Parameters** | **FID ↓** | **CLIP Score ↑** | **Inference Time (RTX 4090)** |
+|---|---|---|---|---|
+| DiffusionGemma | 4B | 8.2 | 32.1 | ~12s |
+| Stable Diffusion XL | 3.5B | 8.5 | 31.8 | ~15s |
+| DALL-E 3 (API) | ~20B | 7.9 | 33.2 | ~5s (cloud) |
+| Midjourney v6.5 | Unknown | 7.5 | 34.0 | ~30s (cloud) |
+
+DiffusionGemma sits comfortably between SDXL and DALL-E 3 on quality, while being the only one you can run for free on your own hardware. The gap to Midjourney v6.5 is real but narrowing — and for many use cases (blog illustrations, UI mockups, concept art), DiffusionGemma is already "good enough."
+
+---
+
+## 6. What This Means for the Industry
+
+**For artists and creators**: A free, open-weight, browser-based image generator removes the last barrier to entry. No subscription, no API credits, no waiting in a Discord queue. The model is yours.
+
+**For developers**: DiffusionGemma's Apache 2.0 license means you can embed it in commercial products, modify the weights, and ship it to users without legal risk. The browser demo proves that client-side AI generation is production-ready.
+
+**For Google**: This is a strategic move to counter OpenAI's DALL-E dominance and Stability AI's open-source leadership. By releasing a competitive open model, Google gets developer mindshare without the support burden of a consumer product.
+
+**For the open-source community**: DiffusionGemma joins Gemma, PaliGemma, and Gemma 3 in Google's growing open-weight ecosystem. The consistency of the Gemma brand — same tokenizer conventions, same licensing, same Hugging Face integration — makes it easier for developers to adopt multiple models from the same family.
+
+---
+
+## 7. Limitations and Honest Assessment
+
+- **Not photorealistic**: DiffusionGemma excels at digital art, illustrations, and stylized images. For photorealistic portraits or product photography, Midjourney and DALL-E 3 still lead.
+- **No inpainting/outpainting**: The initial release is text-to-image only. Inpainting, outpainting, and ControlNet-style conditioning are on the roadmap but not yet available.
+- **WebGPU dependency**: The browser demo requires a modern GPU. Integrated graphics and older devices fall back to slow CPU inference.
+- **4B is a ceiling, not a floor**: While 4B is impressively small for the quality, it's still too large for most phones. A 1B or 800M variant would unlock mobile generation.
+
+---
+
+## The Bottom Line
+
+DiffusionGemma is the most significant open-weight image model release of 2026. It's not the best image generator in the world — but it's the best one you can run for free, in your browser, without asking anyone for permission.
+
+For a field that has been dominated by closed APIs and expensive subscriptions, that's a genuinely new thing. The question is no longer "can AI generate images?" It's "can AI generate images on *your* terms?" DiffusionGemma answers yes.
+
+---
+
+**Sources**
+
+- Google DeepMind, "DiffusionGemma: A 4B Open-Weight Image Generation Model" (June 12, 2026)
+- Hugging Face model card: `google/diffusiongemma-4b`
+- Live demo: `ai.google.dev/diffusiongemma`
+- Kaggle: `kaggle.com/models/google/diffusiongemma`
+- Technical report: arXiv:2606.08472
