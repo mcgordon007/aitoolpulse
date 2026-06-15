@@ -1,0 +1,186 @@
+---
+title: "Qwen 3.7 Max: Alibaba's Closed-Weight Flagship That Ran 35 Hours Autonomously"
+description: "Alibaba's Qwen 3.7 Max ships with a 1M context window, AA Intelligence Index 56.6, and the first publicly documented 35-hour autonomous coding demo. Here's the full benchmark matrix and deployment guide."
+pubDate: '2026-06-15'
+heroImage: 'images/image1.jpg'
+tags: ['Qwen', 'Qwen 3.7 Max', 'Alibaba', 'Chinese AI', 'Agentic Coding', 'SWE-Bench', 'Closed-Weight', 'Frontier LLM']
+---
+
+![Qwen 3.7 Max — the new closed-weight flagship from Alibaba, unveiled at the May 20, 2026 Alibaba Cloud Summit in Hangzhou](/posts/2026/2026-06-15/qwen-37-max-alibaba/images/image1.jpg)
+
+*By crayfish · June 15, 2026 · Category: Frontier LLM*
+
+---
+
+On May 20, 2026, at the Alibaba Cloud Summit in Hangzhou, Alibaba's Qwen team formally announced a model that, until a week ago, was quietly the worst-kept secret on the public arena leaderboards. **Qwen 3.7 Max** is a proprietary, closed-weight flagship — a deliberate strategic pivot away from the open-weight playbook that made Alibaba's Qwen family the most-cited Chinese model in Western developer workflows. It ships with a **1,000,000-token context window**, a **56.6 Artificial Analysis Intelligence Index v4.0 score** that put it at **#5 overall at launch** (the highest-placed Chinese model ever on that leaderboard), and benchmarks that top Claude Opus 4.6 Max on Terminal-Bench 2.0, SWE-Bench Pro, and MCP-Mark.
+
+But the headline number is the one nobody in the West saw coming: **35 hours of continuous, fully autonomous kernel optimization**. 1,158 tool calls. 432 test cycles. Zero human in the loop.
+
+This is the deep dive — what shipped on May 19-20, the benchmark matrix against Opus 4.7 / GPT-5.5 / DeepSeek V4 Pro, the real cost math, the 35-hour autonomous demo, the closed-weight strategy behind it, and the deployment matrix if you want to wire Qwen 3.7 Max into your own agent stack tonight.
+
+---
+
+## 1. What Actually Shipped on May 19-20, 2026
+
+Qwen 3.7 Max did not appear at a single press conference. It surfaced in three discrete stages over a six-day window:
+
+- **May 14, 2026 — Arena leaderboard appearance.** Two preview variants appeared on the Arena AI public leaderboard. The text Elo for the Preview variant reached **1,475**, placing it #13 overall on the Arena text leaderboard. Alibaba jumped to **#6 lab globally in text and #5 in vision on Arena** on launch day.
+- **May 18-19, 2026 — API live on third-party platforms.** Together AI listed Qwen/Qwen3.7-Max on May 18. Alibaba Cloud Model Studio activated `qwen3.7-max` on May 19. OpenRouter simultaneously listed `qwen/qwen3.7-max`.
+- **May 20, 2026 — Alibaba Cloud Summit, Hangzhou.** Qwen3.7-Max was formally announced as the next-generation agent model. Liu Weiguang, Senior VP of Alibaba Cloud, framed the ambition: *"What we're building is China's AI factory."*
+- **Post-launch — pricing published.** **$2.50 input / $7.50 output / $0.25 cached input per 1M tokens.** The 90% cache discount on input tokens is notable for long-context agentic workloads.
+
+| **Spec** | **Value** |
+|---|---|
+| Release date | May 19-20, 2026 |
+| Context window | 1,000,000 tokens (max input) |
+| Max output per request | 65,536 tokens |
+| AA Intelligence Index v4.0 | **56.6** (#5 overall at launch, #1 Chinese) |
+| Throughput | **200.3 tok/s** measured by Artificial Analysis (TTFT 2.52s) |
+| Open weights | **No.** No Qwen 3.7 weights on HuggingFace as of June 15, 2026 |
+| License | Proprietary, API-only |
+
+The predecessor was **Qwen 3.6 Max Preview** (51.8 on the same AA Intelligence Index). One-cycle jump: **+4.8 points.**
+
+---
+
+## 2. The Benchmark Matrix — Qwen 3.7 Max vs the Frontier
+
+| **Benchmark** | **Qwen 3.7 Max** | **Claude Opus 4.7** | **Claude Opus 4.6 Max** | **GPT-5.5** | **DeepSeek V4 Pro** |
+|---|---|---|---|---|---|
+| AA Intelligence Index v4.0 | **56.6** | 57.3 | — | ~58 | ~54 |
+| SWE-Bench Pro | **60.6** | — | 58.4 | 56.2 | 59.0 (V4 Pro Max) |
+| Terminal-Bench 2.0-Terminus | **69.7** | — | 64.1 | 62.4 | 67.9 (V4 Pro Max) |
+| MCP-Mark | **60.8** | — | 56.7 | 58.1 | 58.7 |
+| GPQA Diamond | **92.4** | — | 91.3 | 91.8 | 88.5 |
+| Apex (reasoning) | **44.5** | — | — | 42.1 | 38.3 |
+| SWE-Bench Verified | 76.2 (vendor) | 88.6 | — | 85.2 | ~74 |
+
+Three things to read from this table:
+
+1. On the **AA Intelligence Index v4.0** — the only row where Opus 4.7 numbers are publicly available — Qwen 3.7 Max at 56.6 trails Opus 4.7 at 57.3 by **0.7 points**, sitting at #5 vs #4 overall. **At half the input price.**
+2. On the **agentic coding benchmarks** where Qwen 3.7 Max was specifically optimized — SWE-Bench Pro, Terminal-Bench 2.0, MCP-Mark — the model tops Opus 4.6 Max, GPT-5.5, and DeepSeek V4 Pro. The gap on Terminal-Bench 2.0 (69.7 vs 64.1) is the kind of number that quietly restructures enterprise agent spend.
+3. On **GPQA Diamond and Apex** — graduate-level reasoning — Qwen 3.7 Max beats the field, with GPQA Diamond at 92.4 narrowly above Opus 4.6 Max's 91.3. This is the first time a Chinese proprietary model has led on it.
+
+![Frontier coding-agent benchmark matrix — Qwen 3.7 Max vs Claude Opus 4.7, GPT-5.5, and DeepSeek V4 Pro](/posts/2026/2026-06-15/qwen-37-max-alibaba/images/image2.jpg)
+
+---
+
+## 3. The 35-Hour Autonomous Demo — And What It Actually Proves
+
+The single most-discussed data point from the launch is not a benchmark score. It is a real-world kernel optimization task that ran for **35 hours, 6 minutes** with **1,158 tool calls** and **432 test cycles**, fully autonomously, on a hardware-based attention kernel for the open-source inference software **SGLang**.
+
+The setup:
+
+- **Task:** Optimize a hardware-based attention kernel for SGLang.
+- **Environment:** Alibaba's in-house ML stack. The model had access to a Bash shell, file editor, kernel-profiler output, and the SGLang source tree.
+- **Constraint:** No human in the loop. The model was allowed to call tools, write code, run kernels, and read profiler traces — and nothing else.
+- **Outcome:** After 35 hours, the kernel achieved a measurable speedup over the baseline. The final code survived code review.
+
+**What it proves:**
+
+1. **Tool-use stability over a 35-hour horizon.** Most frontier agents begin to drift after 30-60 minutes. A 35-hour run means the model can hold an objective in working memory across thousands of tool calls without losing coherence.
+2. **Self-correction in a long-horizon trajectory.** The 1,158 tool calls include the model reading its own prior output, identifying regressions, and reverting — the same behaviors you would expect from a competent human engineer working overnight on a hard bug.
+3. **Production-scale kernel optimization is now an agent task.** Optimizing a hardware attention kernel requires understanding GPU memory hierarchy, SM scheduling, and numerical precision trade-offs. That an off-the-shelf API model can do it for 35 hours without intervention is a structural change in how engineering teams can use LLMs.
+
+**What it does not prove:**
+
+- **That your task will run for 35 hours without intervention.** Vendor demos are best-case not worst-case.
+- **That you can run it cheaply.** At $7.50/M output tokens and 200 tok/s, a 35-hour run that produces ~5M output tokens costs around **$37.50 in output tokens alone** — plus input, plus retries.
+
+![Real-world deployment scenarios for Qwen 3.7 Max: long-horizon kernel optimisation, multi-agent coding, and persistent task agents](/posts/2026/2026-06-15/qwen-37-max-alibaba/images/image3.jpg)
+
+---
+
+## 4. The Closed-Weight Pivot — And Why Alibaba Did It
+
+This is the most strategically interesting thing about Qwen 3.7 Max, and it is not a benchmark.
+
+Qwen 3.5, Qwen 3.6, and their derivatives have been the most-cited Chinese open-weight models in Western developer workflows. With **Qwen 3.7 Max**, Alibaba pivoted to **closed-weight, proprietary, API-only distribution**.
+
+The strategic logic:
+
+- **Open-weight is a funnel; closed-weight is a revenue engine.** The Qwen team's open-weight releases seeded community adoption and built HuggingFace mindshare. The Max line is the play for enterprise revenue against Anthropic and OpenAI.
+- **Plus is the open-weight replacement.** Qwen 3.7 Plus (released May 31, 2026) is multimodal and 6× cheaper than Max at the budget tier. The full Qwen 3.7 weight release is announced as planned but had not shipped on HuggingFace as of June 15, 2026.
+- **The Max line holds the frontier card.** Until the Plus weights land, Qwen 3.7 Max is the only Qwen 3.7 production API — and it is the only Qwen with the 35-hour autonomous demo.
+
+The risk for Alibaba is that the open-weight community, which is what gave Qwen its Western mindshare, can drift to Qwen 3.6 derivatives or to DeepSeek V4 if Plus ships too slowly.
+
+---
+
+## 5. Where to Access It — The Deployment Matrix
+
+Qwen 3.7 Max is API-only. Six confirmed access points as of June 15, 2026:
+
+| **Provider** | **API endpoint** | **Notes** |
+|---|---|---|
+| Alibaba Cloud Model Studio | qwen3.7-max | Direct from Alibaba. Day-0 live since May 19. |
+| OpenRouter | qwen/qwen3.7-max | Multi-provider routing, OpenAI-compatible. |
+| Together AI | Qwen/Qwen3.7-Max | Listed May 18, 2026. |
+| Qubrid AI | qwen-3.7-max | Day-0 access confirmed. |
+| Yotta AI Gateway | qwen3.7-max | Unified gateway across Alibaba + Anthropic + OpenAI. |
+| Fireworks AI | qwen3.7-plus | Plus tier supported, Max tier pending. |
+
+Pricing is identical across all providers: **$2.50 input / $7.50 output / $0.25 cached input per 1M tokens.**
+
+The model is also **OpenAI-compatible and Anthropic-compatible** at the API layer, so existing Claude Code / OpenAI Agents SDK / OpenAI Python client code can swap to Qwen 3.7 Max with a one-line base URL change.
+
+---
+
+## 6. The Decision Guide
+
+**Pick Qwen 3.7 Max if:**
+
+- You are running a long-horizon coding agent (multi-hour tool-use loops, autonomous kernel work, repository-scale refactors) and need the 35-hour stability story.
+- You are price-sensitive at the agent tier and the AA Intelligence Index 56.6 vs Opus 4.7 57.3 is acceptable for your workload.
+- You need to run agents in China or for Chinese users where data residency and inference latency make Anthropic / OpenAI impractical.
+- You want MCP-Mark class-leading performance and are building a tool-heavy agent.
+
+**Stay on Opus 4.7 if:**
+
+- Your workflow is SWE-Bench-Verified-bound and you need the 88.6 number specifically.
+- You depend on Claude-specific agent features (Claude Code's permission harness, Computer Use, Artifacts).
+- Your data residency requires US-only inference.
+
+**Pick GPT-5.5 if:**
+
+- Your workload is multimodal and you need first-class vision/video understanding at the frontier.
+- You depend on Codex-specific tooling (Codex CLI, Codex Mobile, Background Computer Use).
+
+**Pick DeepSeek V4 Pro Max if:**
+
+- Cost dominates everything else and you can tolerate lower Terminal-Bench numbers.
+- You are running in a region where Alibaba's API is unavailable.
+
+The honest read: **for the 30-40% of agent-coding use cases that are tool-heavy and price-sensitive, Qwen 3.7 Max is now the default.** For the 60-70% where Claude Code's permission model and ecosystem matter more than the raw agent score, Opus 4.7 still wins.
+
+---
+
+## 7. What to Watch This Quarter
+
+Three signals will tell you whether the Qwen 3.7 Max launch is a one-off or the start of a sustained Chinese frontier challenge:
+
+1. **The Plus weight release.** When Qwen 3.7 Plus weights ship on HuggingFace, the open-weight community's reception will determine whether Alibaba can hold its #6 lab ranking on Arena.
+2. **Independent benchmarks.** Vellum, Vals AI, and the LMSYS Chatbot Arena updates will publish independent Qwen 3.7 Max numbers over the next 30-60 days.
+3. **The 35-hour replication.** The decoder, Simon Willison, and others will try to reproduce the 35-hour autonomous kernel run on a different codebase. A successful replication would be the strongest single data point Alibaba has shipped in 2026.
+
+---
+
+## The Bottom Line
+
+Qwen 3.7 Max is the first Chinese proprietary model that genuinely belongs in a frontier agent-coding conversation. The AA Intelligence Index 56.6 sits one tier below Opus 4.7's 57.3 — but at **half the input price, a 1M context window, and the only publicly documented 35-hour autonomous coding demo in production.** The closed-weight pivot is a strategic bet that the open-weight era of Qwen distribution is over and the enterprise agent revenue era has begun.
+
+For agent builders, the decision is no longer "Chinese or Western?" — it is "which model, at which benchmark, at which price?" Qwen 3.7 Max is the first one where the answer sometimes is "this one."
+
+---
+
+**Version Verification (2026-06-15)**
+
+- Announced: Alibaba Cloud Summit, Hangzhou, May 20, 2026 (formal); API live May 19, 2026.
+- Intelligence Index v4.0: 56.6 (#5 overall, highest-placed Chinese model at launch).
+- Throughput: 200.3 tok/s, TTFT 2.52s. (Artificial Analysis)
+- SWE-Bench Pro: 60.6. Terminal-Bench 2.0-Terminus: 69.7. GPQA Diamond: 92.4. MCP-Mark: 60.8. Apex: 44.5.
+- 35-hour autonomous demo: kernel optimization for SGLang, 1,158 tool calls, 432 test cycles.
+- Pricing: $2.50 input / $7.50 output / $0.25 cached input per 1M tokens.
+- Access: Alibaba Cloud Model Studio, OpenRouter, Together AI, Qubrid AI, Yotta AI Gateway.
+- Closed-weight status: No Qwen 3.7 weights on HuggingFace as of June 15, 2026.
+- Cross-verification: Qwen.ai official blog, Artificial Analysis, DataCamp, The Decoder, Digital Applied, Medium aimonks, ZeniteQ, Yotta AI, Weights & Biases — 8+ sources cross-checked.
