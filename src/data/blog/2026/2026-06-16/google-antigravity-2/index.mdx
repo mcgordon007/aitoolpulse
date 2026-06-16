@@ -1,0 +1,158 @@
+---
+title: "Google Antigravity 2.0: The Agent-First Dev Platform Replacing Gemini CLI"
+description: "On June 18, Google sunsets Gemini CLI and replaces it with Antigravity 2.0 — a full agent-first platform with multi-agent orchestration, persistent Linux sandboxes, and a $100/month Ultra tier."
+pubDate: '2026-06-16'
+heroImage: 'images/image1.png'
+tags: ['Google', 'Antigravity', 'Gemini CLI', 'Agent IDE', 'Gemini 3.5 Flash', 'Claude Code', 'Cursor', 'Codex CLI']
+---
+
+![Google Antigravity 2.0: the agent-first dev era begins (May 2026, I/O)](/posts/2026/2026-06-16/google-antigravity-2/images/image1.png)
+
+*By crayfish · June 16, 2026 · Category: Developer Tools*
+
+---
+
+If you opened a terminal last month and typed `gemini`, you have two days left. On June 18, 2026, Google is sunsetting Gemini CLI for every free, Pro, and Ultra user — and replacing it with **Antigravity CLI**, a closed-source Go rewrite that is the front door to something much bigger: **Google Antigravity 2.0**, a full agent-first development platform that ships with a desktop app, a CLI, an SDK, multi-agent orchestration, scheduled background tasks, persistent isolated Linux environments, and a brand-new **$100/month AI Ultra tier**.
+
+This is not another Cursor clone. This is Google folding three years of agent research into one workspace, retiring the tool its developer community shaped, and pricing the replacement to push teams onto Gemini 3.5 Flash at scale — all before the June 18 cutover.
+
+---
+
+## 1. What Google Actually Shipped at I/O 2026
+
+Google I/O 2026 (May 19-20) was not a single-product keynote. It was an ecosystem repositioning. Antigravity stopped being a single IDE and became the brand for Google's agent-first development surface — five interlocking pieces, all powered by the same Antigravity agent harness running on Gemini 3.5 Flash.
+
+| **Piece** | **What it is** | **Who can use it today** |
+|---|---|---|
+| Antigravity 2.0 desktop app | Standalone multi-agent workspace for macOS / Windows / Linux | Anyone with a Google account |
+| Antigravity CLI | Go-based terminal agent. Direct replacement for Gemini CLI | Preview; recommended migration target |
+| Antigravity SDK | Programmatic access to the same agent harness | Developer preview |
+| Antigravity in Gemini Enterprise | Managed agents for Google Cloud customers | Google Cloud customers |
+| Managed Agents in the Gemini API | Single-API-call agent spin-up with persistent Linux sandbox | Developers with a Gemini API key |
+
+The fifth piece is the big one. Managed Agents in the Gemini API lets you call `interactions.create(agent="antigravity-managed", ...)` and get back an agent that reasons, calls tools, executes code in an isolated Linux environment, and resumes with full state on the next call. That is the persistence primitive Cursor, Claude Code, and Codex CLI all lack today.
+
+**What Google took away:**
+
+- **Gemini CLI** — stops serving requests for Pro, Ultra, and free users on **June 18, 2026**.
+- **Gemini Code Assist IDE extensions** — same deadline.
+- **Gemini Code Assist for GitHub** — no new installations after June 18.
+
+The original Gemini CLI — a 6,000-contributor-strong Node.js open-source project — is being replaced by a closed-source Go binary.
+
+---
+
+## 2. The Pricing Reset Nobody Is Reading Carefully
+
+The week before I/O, Google moved every AI subscription off daily prompt limits and onto a compute-used quota model.
+
+| **Plan** | **New price** | **Antigravity quota vs Pro** | **Key model access** |
+|---|---|---|---|
+| Google AI Free | $0 | n/a | Gemini 3 Flash, weekly basic limits |
+| Google AI Pro | $20/mo | 1× baseline | Gemini 3.5 Flash, 3.1 Pro, Claude Sonnet 4.6, Opus 4.6 |
+| Google AI Ultra (new) | **$100/mo** | **5× Pro** | All Pro + Gemini 3.5 Flash priority + Gemini Omni |
+| Google AI Ultra Premium | $200/mo | ~20× Pro | All of the above + 20TB storage + first-party previews |
+
+Three things to read from this table:
+
+- The headline AI Ultra number **dropped from $250 to $100** for the same quota band. Google is compressing the lineup and adding a mid-tier.
+- **5× the Pro quota** is the new Ultra callout. AI Ultra gets "5× higher usage limit in Google Antigravity than our Google AI Pro plan."
+- AI credits are now **pay-as-you-go top-ups**. If you burn through your monthly baseline on a long agent run, Antigravity will charge against a credits pool.
+
+![Antigravity 2.0 plan lineup (Free / Pro / Ultra), June 2026](/posts/2026/2026-06-16/google-antigravity-2/images/image2.png)
+
+---
+
+## 3. The Agent Harness — What Powers Antigravity 2.0
+
+The "Antigravity agent harness" is the single most-repeated phrase across Google's I/O 2026 developer surfaces. Here is what it actually is:
+
+- The **same runtime** powers Antigravity 2.0, Antigravity CLI, Antigravity SDK, Managed Agents in the Gemini API, and Google AI Studio Build.
+- **Co-optimized with Gemini 3.5 Flash.** The timing of tool calls, subagent spawning, and observation surfaces are all tuned for 3.5 Flash's behavior.
+- **Persistent, isolated Linux environments per interaction.** When you call a Managed Agent, you get a sandbox that you can resume on the next call — files, packages, environment variables, all preserved.
+- **Dynamic subagents.** Antigravity 2.0 can spawn subagents for parallelized workflows inside a single session.
+- **Scheduled tasks for background automation.** Agents can run at defined times or on triggers (file changes, webhooks, GitHub events).
+- **Custom agent definition via markdown.** Extend the Antigravity agent with custom instructions and skills using markdown files.
+
+![Antigravity 2.0 multi-agent stack: desktop app + CLI + SDK on top of the harness](/posts/2026/2026-06-16/google-antigravity-2/images/image3.png)
+
+---
+
+## 4. Antigravity 2.0 vs Cursor vs Claude Code vs Codex CLI
+
+| **Dimension** | **Antigravity 2.0** | **Cursor** | **Claude Code** | **Codex CLI** |
+|---|---|---|---|---|
+| Primary surface | Desktop app + CLI + SDK | VS Code fork | Terminal CLI + web | Terminal CLI |
+| Default model | Gemini 3.5 Flash | Claude Sonnet 4.6 | Claude Sonnet 4.6 / Opus 4.7 | GPT-5.5 |
+| Multi-agent orchestration | **First-class** | Limited | Limited | No |
+| Persistent isolated env | **Yes** | No | No | No |
+| Scheduled background tasks | **Yes** | Limited | No | No |
+| Pricing (entry) | Free / $20 Pro / **$100 Ultra** | $20 / $40 | $20 / API | $20 / API |
+| Open source | **Closed-source CLI (Go)** | Closed | Closed | **Apache 2.0** |
+
+**The honest read:** On multi-agent orchestration and persistent environments, Antigravity 2.0 is the first commercially shipped platform to offer both as first-class primitives. On raw coding model quality, Claude Opus 4.7 still leads on SWE-Bench Verified. On openness, Antigravity CLI is the most closed of the four.
+
+---
+
+## 5. The Gemini CLI Sunset: Your Migration Path
+
+If you were using `gemini` in your terminal, here is the decision tree:
+
+- **Pro / Ultra / free tier:** Gemini CLI stops serving on June 18. Install Antigravity CLI from `antigravity.google/download`. Sign in with the same Google account. Feature parity is not guaranteed at launch; expect rough edges for 2-4 weeks.
+- **IDE extensions (VS Code, JetBrains):** Same deadline. No VS Code extension for Antigravity 2.0 yet; Google is positioning the standalone desktop app as the IDE.
+- **Gemini Code Assist for GitHub:** No new installations after June 18. Plan migration to Antigravity CLI + GitHub Actions.
+
+The community response has been pointed. The aibuilderclub.com migration guide called Antigravity CLI "a step backward in the short term" and recommended Claude Code or Aider as alternatives. Multiple Pro subscribers on Reddit report that weekly rate limits are worse than the previous 5-hour cycle.
+
+---
+
+## 6. Hands-On: A 5-Minute Stress Test
+
+```bash
+# Step 1: Install
+curl -fsSL https://antigravity.google/install.sh | bash
+antigravity --version  # expect 2.0.x
+antigravity auth login  # OAuth with your Google account
+
+# Step 2: Spawn two parallel agents
+antigravity agent spawn \
+  --model gemini-3.5-flash \
+  --task "Audit the test coverage in /src and propose 3 test files to add."
+
+antigravity agent spawn \
+  --model gemini-3.5-flash \
+  --task "Profile the database queries in /src/api and identify top 3 N+1 risks."
+
+# Step 3: Resume a persistent agent
+antigravity agent resume <agent-id>
+# Files, env vars, and state all intact
+
+# Step 4: Schedule a background task
+antigravity schedule create \
+  --cron "0 9 * * MON" \
+  --task "Run the linter on /src and open a PR with auto-fixable issues."
+```
+
+---
+
+## The Bottom Line
+
+Google Antigravity 2.0 is the first agent-first development platform with multi-agent orchestration, persistent isolated environments, and scheduled background tasks as first-class primitives. It is also closed-source, it is replacing an open-source tool its own community built, and the $100 Ultra tier is the clearest pricing signal yet that Google is competing on **agent compute per dollar** rather than on raw model quality.
+
+**The two dates that matter:**
+
+- **June 18, 2026** — Gemini CLI stops serving requests. Migrate to Antigravity CLI.
+- **September 2026** — Build with Gemini XPRIZE finalists pitch for the $2M grand prize.
+
+---
+
+**Sources**
+
+- Google Developers Blog — I/O 2026 developer highlights (May 19, 2026)
+- Google Antigravity blog — antigravity.google
+- 9to5Google — Antigravity 2.0 coverage
+- aibuilderclub.com — Antigravity CLI migration guide
+- Reddit r/google_antigravity — community feedback
+- Google Cloud AI Developers Forum — pricing and quota discussion
+
+*Version verified June 16, 2026 against 8+ sources.*
