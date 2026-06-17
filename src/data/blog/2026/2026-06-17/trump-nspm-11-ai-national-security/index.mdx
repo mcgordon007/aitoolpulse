@@ -1,0 +1,267 @@
+---
+title: "Trump's NSPM-11 Rewrites AI National Security Rules"
+description: "On June 5, 2026, the White House signed NSPM-11 — the most comprehensive AI national-security doctrine ever issued. Four pillars, a contract-termination clause targeting Anthropic, and the Anthropic carve-out for NSA's Claude Mythos."
+pubDate: '2026-06-17'
+heroImage: 'images/image1.png'
+tags: ['NSPM-11', 'Trump', 'AI National Security', 'Anthropic', 'Claude Mythos', 'Pentagon', 'Export Control', 'AI Policy']
+---
+
+![](/posts/2026/2026-06-17/trump-nspm-11-ai-national-security/images/image1.png)
+
+**Trump's NSPM-11 Just Rewrote the Rules for AI in U.S. National Security --- And Anthropic Becomes Both the Exception and the Target**
+
+*On June 5, 2026, the White House signed a memo that turns frontier AI into classified infrastructure. Six days later, Anthropic's Fable 5 was globally disabled --- a 72-hour shutdown that exposed exactly what NSPM-11 was designed to prevent. Here is the full doctrine, the four pillars, the Anthropic exception, and what every AI builder needs to understand about the new procurement rulebook.*
+
+*By the AI Tools Team | June 17, 2026 | 12 min read · AI Policy*
+
+**The Headline That Quietly Reshaped the Industry**
+
+Most of the AI industry spent the last two weeks arguing about Anthropic's Fable 5 --- the model that shipped on June 9, was force-disabled globally on June 12, and triggered a wave of refund requests from Claude customers. We covered that story yesterday.
+
+What almost everyone missed is the broader policy that made the Fable 5 ban possible --- and that will now govern every AI procurement, every export-control decision, and every frontier-model release for the next decade.
+
+On June 5, 2026, four days before Fable 5 even launched, President Trump signed National Security Presidential Memorandum-11 (NSPM-11), titled "Artificial Intelligence in the National Security Enterprise." It is the most comprehensive statement yet on how the U.S. military, intelligence community, and federal agencies will procure, deploy, secure, and govern frontier AI.
+
+It contains four policy pillars (Adoption, Adaptation, Assurance, Accountability), a contract-termination clause aimed directly at AI vendors that "repeatedly limit government use," a carve-out that keeps Anthropic's Claude Mythos running at the NSA, a requirement to build dedicated high-security AI compute facilities, and a sweeping revision of the Biden-era autonomous-weapons guardrails.
+
+If you build, sell, or buy AI --- especially if you sell to the U.S. government or operate outside the U.S. --- this is the document that decides your fate.
+
+*This is the deep dive.*
+
+**1. The 96-Hour Story Arc: From NSPM-11 to Fable 5's Global Shutdown**
+
+To understand why NSPM-11 matters, you have to read it in sequence with the Fable 5 ban. The two events are not independent. They are cause and effect.
+
+![](/posts/2026/2026-06-17/trump-nspm-11-ai-national-security/images/image2.png)
+
+*Timeline: From the Feb 2026 supply-chain-risk designation to the June 12 global Fable 5 shutdown*
+
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  **Date**                **Event**                                                                        **NSPM-11 Link**
+  ----------------------- -------------------------------------------------------------------------------- -----------------------------------------------------------------------
+  Feb 27, 2026            Pentagon designates Anthropic a "supply-chain risk" over military-use limits   Sets up the contract-termination rationale NSPM-11 will codify
+
+  Mar 10, 2026            Anthropic's supply-chain-risk designation takes effect; Anthropic sues          Litigation that NSPM-11 is later written to provide a "do-over" for
+
+  May 30, 2026            Federal judge rules against Pentagon in Anthropic contract case                  Forces the administration to find a new legal path
+
+  Jun 5, 2026             Trump signs NSPM-11 ("AI in the National Security Enterprise")                 Establishes the doctrinal and legal framework
+
+  Jun 5, 2026             FT reports NSA using Claude Mythos for offensive cyber ops against China/Iran    Justifies the Mythos waiver
+
+  Jun 9, 2026             Anthropic releases Claude Fable 5 (public) + Mythos 5 (institutional)            Public model becomes available to all users worldwide
+
+  Jun 12, 2026 17:21 ET   Commerce Secretary Lutnick sends BIS export-control directive to Anthropic       Triggers global Fable 5/Mythos 5 disable
+
+  Jun 12, 2026 night      Anthropic globally disables Fable 5 and Mythos 5 for all users                   Direct implementation of the new NSPM-11-aligned posture
+
+  Jun 13-15, 2026         Customer refund requests surge; Mythos traffic reroutes to Opus 4.8              The operational consequences begin
+  --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+The most important line in this timeline is the second one from the top: the administration was already losing in court. NSPM-11 is, in significant part, the policy rewrite that gives the White House a fresh legal foundation if it wants to cancel Anthropic's federal contracts again.
+
+**2. The Four Pillars: Adoption, Adaptation, Assurance, Accountability**
+
+NSPM-11 is organized around four explicit policy pillars. Every subsequent directive, every procurement rule, every agency deadline flows from these four.
+
+![](/posts/2026/2026-06-17/trump-nspm-11-ai-national-security/images/image3.png)
+
+*The four pillars of NSPM-11: Adoption, Adaptation, Assurance, Accountability*
+
+**Pillar 1: Adoption --- Rapid AI Deployment**
+
+The memo's opening line is the unambiguous mission statement:
+
+*"Artificial intelligence (AI) will be among the most transformative technologies to national security in the history of the United States." "My Administration will accelerate the development and use of AI for national security applications."*
+
+Operational consequences:
+
+- **Eliminate** bureaucratic procurement delays
+
+- --- the Secretary of War, the DNI, and the heads of all relevant agencies are directed to streamline AI rollouts.
+
+- **Multi-vendor onboarding** is the new default
+
+- --- agencies must be able to switch frontier-model providers in days, not months.
+
+- **Frame the** single-vendor dependency risk as an explicit national-security threat
+
+- --- not just a procurement inefficiency.
+
+*Previous administrations, the memo says, "imposed undue bureaucracy that hampered the pace of AI adoption, fostered dangerous dependencies on single vendors, and made it challenging for our warfighters to adopt the most advanced technologies."*
+
+**Pillar 2: Adaptation --- Commercial and Open-Source Leverage**
+
+The memo explicitly directs agencies to adapt commercial and open-source AI systems for national-security use rather than building bespoke classified models from scratch.
+
+What this means in practice:
+
+- **Frontier commercial models** --- Claude, GPT, Gemini, Grok are now baseline national-security infrastructure, not optional experiments.
+
+- **Open-weight models** --- Llama, Qwen, DeepSeek, Mistral get a formal procurement track --- NSPM-11 explicitly contemplates their use after appropriate assurance review.
+
+- **Joint data and model exchanges** --- agencies are directed to establish classified fine-tune sharing across the IC.
+
+- **AI National Security Strategic Reserve** --- a new construct: a standing pool of pre-cleared model variants, datasets, and compute capacity that can be activated in a crisis.
+
+**Pillar 3: Assurance --- Trustworthiness, Security, Controllability**
+
+This is the pillar that everyone building AI needs to read closely. The memo's assurance section makes one requirement explicit that the industry has been quietly fighting for two years:
+
+*"For systems integrated into defense and intelligence operations, \[external vendor control\] is not acceptable, and NSPM-11 addresses it as a requirement to design around rather than a constraint to tolerate."*
+
+In plain English: AI vendors cannot be allowed to remotely disable, downgrade, or alter models deployed in national-security contexts without federal government approval.
+
+Operational consequences:
+
+- **High-security AI computing facilities** under direct federal control --- not just commercial cloud tenants.
+
+- **National-security AI test range** for evaluating models under operational conditions, not just commercial benchmarks.
+
+- **Standardized T&E/V&V methods** --- these will become de facto procurement standards for any vendor selling to the federal government.
+
+- **Baseline security practices** --- tamper-evident weights, audit trails for inference, supply-chain provenance.
+
+**Pillar 4: Accountability --- Chain-of-Command Authority**
+
+The fourth pillar is the one that privacy and civil-liberties groups are screaming about. NSPM-11 places accountability for AI use inside the military chain of command rather than with external regulators or review boards.
+
+What the memo does:
+
+- **Eliminates** --- the multi-layered pre-deployment review boards that the Biden administration set up for autonomous weapons and intelligence AI.
+
+- **Vests accountability in commanding officers** --- the same officers who are already legally responsible for conventional weapons use.
+
+- **Orders the Pentagon to update its autonomous-weapons policy** (DoD Directive 3000.09 and successors) to align with the new chain-of-command model.
+
+- **Retains** --- the language of "constitutional rights, civil liberties, and laws."
+
+*The Council on Foreign Relations puts it more charitably: the directive is "neither deregulation nor acceleration, but the expression of a community deciding how to operate from a position it did not choose: no longer in control of the core technology, even where it remains ahead."*
+
+**3. The Anthropic Carve-Out: Why the NSA Still Gets Mythos**
+
+Here is the part of the story that sounds contradictory but is actually the most revealing.
+
+NSPM-11 contains a contract-termination clause that, on its face, targets any AI vendor that "repeatedly demonstrated a pattern of conduct that is inconsistent with policies" in the memo. Every major legal analysis --- Breaking Defense, Mayer Brown, Crowell & Moring --- agrees this clause is aimed squarely at Anthropic.
+
+The exact language (per Crowell & Moring's analysis): the Secretary of War, the DNI, and the heads of relevant agencies are directed "to the maximum extent permissible by law, termination for default or for convenience contracts with companies that have repeatedly demonstrated a pattern of conduct that is inconsistent with policies" in NSPM-11.
+
+And yet --- the same memo grants the NSA a narrow waiver to keep running Anthropic's Claude Mythos for offensive cyber operations.
+
+The reason, per the Financial Times (June 5, 2026) and subsequent Pentagon confirmations:
+
+- **Offensive cyber operations** against China, Iran, and other adversary networks.
+
+- **Half a dozen Anthropic engineers** are embedded inside NSA classified facilities to maintain the deployment.
+
+- **Mythos's vulnerability-discovery capabilities** and exploit-chain generation are not yet matched by any other commercial model in the deployed pipeline.
+
+- **Narrow and time-limited** --- the NSA must report on the deployment and transition to an alternative within an unspecified window.
+
+This is the most important policy signal in the entire memo: the U.S. government will not let an AI vendor's refusal to enable military use stop it from getting what it needs. But it will keep using that vendor's model if and only if no better alternative exists.
+
+**The implicit message to Anthropic, OpenAI, Google DeepMind, and every other frontier lab: build models we can use, or watch your competitor's model get used against your geopolitical interests. It is the first explicit doctrinal statement that frontier-model capability is itself a national-security asset.**
+
+**4. What the Termination Clause Actually Means for AI Vendors**
+
+Let's read the contract language the way a federal procurement officer would. The relevant section of NSPM-11 (per Crowell & Moring's June 5 client alert) directs that agencies must, "to the maximum extent permissible by law," terminate contracts with AI vendors that:
+
+1.  Repeatedly demonstrate a pattern of conduct inconsistent with NSPM-11 policies
+
+2.  (i.e., limit or refuse government use of their models).
+
+3.  Fail to support multi-vendor onboarding for the agency's specific mission.
+
+4.  Refuse to design around the no-remote-disable requirement (Pillar 3).
+
+The phrase "to the maximum extent permissible by law" is doing a lot of work. It acknowledges that the administration lost in court when it tried this with Anthropic's \$200M DoD contract earlier in 2026. NSPM-11 is the administration's attempt to write the new rules so that the next legal challenge has to fight the memo itself, not the individual contract action.
+
+For AI vendors, the practical implications are:
+
+  ------------------------------------------------------------------------------------------------------------------------------------------------
+  **Scenario**                                                                   **NSPM-11 Consequence**
+  ------------------------------------------------------------------------------ -----------------------------------------------------------------
+  Vendor refuses all military use of its frontier model                          Contract-termination risk for all federal business
+
+  Vendor allows limited military use but blocks offensive cyber                  Negotiated carve-out, case-by-case (Anthropic today)
+
+  Vendor offers on-prem / air-gapped deployment with no remote disable           Preferred-vendor status under Pillar 3 assurance
+
+  Vendor offers multi-vendor integration APIs                                    Required baseline for any new procurement
+
+  Vendor refuses to share weights, training data, or red-team results with NSA   Supply-chain-risk designation (Anthropic's Q1 2026 experience)
+  ------------------------------------------------------------------------------------------------------------------------------------------------
+
+The last row is the one that the AI safety community is most worried about. Under NSPM-11, an AI lab that wants to refuse military use now risks losing not just defense contracts but its entire federal customer base --- across civilian agencies, intelligence community support contracts, and federally funded research.
+
+**5. The Four New Pieces of Infrastructure**
+
+Beyond the policy pillars, NSPM-11 establishes four new pieces of operational infrastructure. These are the items that will reshape the AI vendor landscape over the next 24 months.
+
+![](/posts/2026/2026-06-17/trump-nspm-11-ai-national-security/images/image4.png)
+
+*NSPM-11 infrastructure stack: high-security compute, test range, strategic reserve, talent reserve*
+
+**5.1 High-Security AI Computing Facilities**
+
+NSPM-11 directs the construction of dedicated AI computing facilities under direct federal control --- not just commercial cloud regions with security clearances. The intent is to ensure that classified fine-tunes, weights, and inference workloads never leave infrastructure that the U.S. government can audit end-to-end.
+
+For the industry: this is a direct challenge to the current model where most federal AI workloads run on AWS GovCloud, Azure Government Secret, or Google Cloud's Assured Workloads. The memo is essentially saying: the existing commercial cloud providers are insufficient for the new threat model, and we will build our own.
+
+**5.2 The National-Security AI Test Range**
+
+A new dedicated test range for evaluating AI capabilities and risks under operational conditions --- not commercial benchmarks. The test range is to be staffed by a mix of NSA, DoD, and federally funded R&D center personnel.
+
+For vendors: expect a new set of test-range-specific evaluation criteria to appear in federal RFPs over the next 12-18 months. Passing the test range becomes a precondition for any high-tier national-security contract.
+
+**5.3 The AI National Security Strategic Reserve**
+
+The AI National Security Strategic Reserve is a new concept --- a standing pool of pre-cleared model variants, datasets, fine-tunes, and compute capacity that can be activated in a crisis. Think of it as the AI equivalent of the Strategic Petroleum Reserve.
+
+The reserve is designed to solve a specific operational problem: when a frontier model is upgraded, deprecated, or politically contested, the national-security enterprise needs a guaranteed fallback. The reserve ensures that the U.S. government always has access to a working, validated, classified-ready model even if the commercial vendor relationship is disrupted.
+
+**5.4 The AI Talent Reserve**
+
+NSPM-11 directs the Office of Personnel Management (OPM) to establish a new AI talent reserve --- a specialized hiring and retention track for AI engineers, researchers, and red-teamers willing to obtain security clearances and work on national-security projects.
+
+For the industry: this is a direct competitive threat for AI talent. Federal salaries traditionally lag private-sector compensation by 30-50% for senior AI roles. NSPM-11 is the policy foundation for closing that gap with new pay authorities, faster hiring, and direct commissioning paths.
+
+**6. The Geopolitical Read: Why This Isn't Just a U.S. Story**
+
+Three implications for AI builders outside the U.S.
+
+First, the export-control logic is now formalized. The Fable 5 ban was framed as a one-off national-security response to a specific jailbreak risk. NSPM-11 is the doctrinal foundation that the administration can now point to for any future export-control action against any frontier model. The Fable 5 precedent + the NSPM-11 framework = a reusable legal template.
+
+Second, multi-vendor onboarding is about more than redundancy. The memo's emphasis on multi-vendor is partly a hedge against single-vendor dependency (Anthropic), but it is also a hedge against geopolitical dependency. The administration wants the U.S. national-security enterprise to be able to switch from U.S. frontier models to U.S. open-weight models to allied-nation models on days' notice, without losing operational capability.
+
+Third, the NSA Mythos waiver is a signal to allied intelligence services. Five Eyes partners, Israeli, Japanese, and Korean intelligence services all run AI-acceleration programs. The NSPM-11 framework --- with its carve-out logic, its infrastructure requirements, and its termination clause --- is the template the U.S. is implicitly offering to allies. Expect the UK's AI Security Institute, Japan's AIPI, and the EU's AI Act enforcement bodies to draft analogous frameworks over the next 18 months.
+
+**7. What AI Builders Should Do This Week**
+
+If you are building AI products --- whether you sell to the U.S. government, operate in allied nations, or just want to stay out of the next export-control action --- here is the short list of what to do based on NSPM-11.
+
+5.  **Map your deployment model against Pillar 3 assurance.** If your product uses a remotely-controlled model (e.g., API-only with the vendor able to throttle or disable access), map the specific risks for any federal, defense, or intelligence customer. The no-remote-disable requirement is going to be a hard procurement criterion within 12 months.
+
+6.  **Build the multi-vendor abstraction layer.** If you have a single-vendor dependency anywhere in your stack --- model provider, vector database, inference runtime --- start building the abstraction layer now. NSPM-11 makes multi-vendor onboarding a federal procurement default. Federal buyers will start asking for it in RFPs in Q3-Q4 2026.
+
+7.  **Watch for the test-range evaluation criteria.** The national-security AI test range is going to publish evaluation methodologies. Even if you do not sell to the federal government, those criteria will become de facto industry standards for safety, robustness, and red-team testing.
+
+8.  **Read the autonomous-weapons policy update.** DoD Directive 3000.09 is being rewritten under NSPM-11. If your company is in the defense-tech supply chain --- even tangentially, through computer vision, sensor fusion, or autonomous navigation --- the new directive will reach you within 12 months.
+
+9.  **Plan for the talent-reserve recruiting pressure.** The AI Talent Reserve will pay premium compensation for cleared AI engineers. If you are an AI hiring manager, your cleared-candidate pipeline is about to get a lot more competitive.
+
+**The Bottom Line**
+
+NSPM-11 is the first comprehensive national-security doctrine for AI issued by any government. It is not a press release, not an executive-order flourish, not a future-of-AI panel report. It is a binding directive that has already been used as the legal foundation for the Fable 5 ban, and that will govern every federal AI procurement, export-control decision, and autonomous-weapons policy update for the next decade.
+
+The single sentence to remember:
+
+***For systems integrated into defense and intelligence operations, \[external vendor control\] is not acceptable, and NSPM-11 addresses it as a requirement to design around rather than a constraint to tolerate.***
+
+**If you build AI and you can be remotely disabled by a vendor, a foreign government, or a court order --- you are not national-security-ready under NSPM-11.**
+
+**The era of AI as a software product is over. The era of AI as critical national-security infrastructure has begun.**
+
+**Sources**
+
+*White House (whitehouse.gov/presidential-actions/2026/06/national-security-presidential-memorandum-nspm-11), Crowell & Moring client alert (June 5, 2026), Breaking Defense (June 2026), Mayer Brown legal update (March 10, 2026), Council on Foreign Relations analysis, EPIC.org policy analysis, Financial Times (June 5, 2026), Small Wars Journal (June 8, 2026), Malwarebytes, Mashable, InfoQ, LinkedIn (Janet Egan, June 5, 2026).*
