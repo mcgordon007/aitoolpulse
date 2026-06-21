@@ -1,0 +1,245 @@
+---
+title: "HPE Just Declared That the Network Is the New OS for the Agentic Enterprise"
+description: "At HPE Discover 2026, Antonio Neri and Rami Rahim made the most aggressive networking-first argument in enterprise AI so far. Here's the full stack, the four business-model bets, and what every AI builder needs to know."
+pubDate: 2026-06-18
+heroImage: "/posts/2026/2026-06-18/hpe-discover-2026-agentic-enterprise/images/image1.png"
+tags: ["HPE", "Juniper", "networking", "agentic AI", "enterprise infrastructure", "Marvis", "HPE Discover"]
+---
+
+![](/posts/2026/2026-06-18/hpe-discover-2026-agentic-enterprise/images/image1.png)
+
+**HPE Just Declared That the Network Is the New OS for the Agentic Enterprise --- And It Is Bringing Every Switch, Router, and Firewall to Prove It**
+
+*At HPE Discover 2026 in Las Vegas (June 15--18, Venetian Convention Center), HPE used Antonio Neri's Tuesday keynote to make the most aggressive networking-first argument in enterprise AI so far. The Marvis self-driving framework is now running inside Aruba Central, Juniper's Mist is now managing HPE's own CX switches, six new Juniper QFX/PTX/SRX/MX switches cover every layer of the AI data center, and the entire pitch --- to borrow Rami Rahim's line --- is that "the success of agentic AI in the enterprise depends on a modern networking foundation built for autonomous workflows." Here is the full stack, the four business-model bets behind it, and what every AI builder and operator needs to understand about why the network is suddenly the control plane of the agentic enterprise.*
+
+*By the AI Tools Team | June 18, 2026 | 11 min read · AI Infrastructure*
+
+**The Headline That the Networking Industry Just Realized It Wrote**
+
+For two years the AI industry has argued about which model wins, which agent framework wins, which GPU wins, which cloud wins. Last week, at HPE Discover 2026 in Las Vegas, Antonio Neri made the most aggressive pitch yet that the question itself is wrong. The race is not about models, agents, GPUs, or clouds anymore. It is about the network that connects them.
+
+On Tuesday, June 16, Neri's keynote at the Venetian Convention & Expo Center rolled out six new Juniper-powered switches and routers, a major expansion of the HPE Marvis self-driving framework into HPE Aruba Central, a unification of HPE Mist with HPE CX wired access, a new agentic NetOps reasoning engine that reads millions of TAC cases to debug data-center networks, and a brand-new Unified SASE + Zero Trust fabric that wraps the entire portfolio into a single security and operations plane.
+
+Every single announcement came back to the same sentence, which Rami Rahim --- the former Juniper CEO who now runs HPE's entire networking business --- put on the keynote screen:
+
+*"The success of agentic AI in the enterprise depends on a modern networking foundation built for autonomous workflows, where network performance, reliability, and intelligence determine the effectiveness of the entire AI architecture."*
+
+This is the most important networking announcement of 2026. And almost no one outside the enterprise-IT press is talking about it, because the surface looks like six boxes and a software update.
+
+It is not six boxes and a software update. It is HPE's bet that the network --- not the GPU cluster, not the agent framework, not the model --- is the substrate that the agentic enterprise will be built on. Every other vendor in the stack (Cisco, Arista, Palo Alto, Juniper-stand-alone, the hyperscalers) is going to have to respond.
+
+*This is the deep dive.*
+
+**1. The 4-Day Arc: What Actually Got Announced at HPE Discover 2026**
+
+HPE Discover ran June 15--18 at the Venetian. Most of the headline news dropped on Tuesday June 16 during Neri's day-one keynote and Rami Rahim's networking deep-dive session. Here is the timeline.
+
+| Date | Session | What Shipped |
+| Mon Jun 15 | Tech Pro University / Welcome Reception | Pre-conference training; partner expo opens |
+| Tue Jun 16 8am | Neri Day-1 Keynote | "Agentic enterprise" vision, NVIDIA Vera Rubin expansion, Vultr partnership, AMD Helios QFX5252 |
+| Tue Jun 16 10:15am | HPE Discover Showcase | Floor opens: ~200 partner booths, live demos |
+| Tue Jun 16 11am | Rahim Networking General Session | Six new switches/routers, Mist ↔ CX integration, Marvis → Aruba Central, Unified SASE |
+| Wed Jun 17 | Breakouts (TB1449 Marvis Copilot, etc.) | Deep-dive sessions on Marvis Minis, agentic RCA, Vultr AI fabric |
+| Thu Jun 18 | Customer case-studies + final keynotes | Siemens Energy, Dallas Cowboys, Sovereign AI Factory sessions |
+
+*The single most important observation --- flagged by ServeTheHome's live keynote blogger Patrick Kennedy --- is the order of the keynote: Neri did not start with compute, did not start with AI models, did not start with NVIDIA. He started with networking. As Kennedy wrote: "the rest of the industry seems focused on compute, HPE kicked off with networking."*
+
+That is a deliberate framing choice. And it tells you what HPE thinks the next two years of enterprise-AI competition will be fought over.
+
+**2. The Six New Boxes: A Switch and Router for Every Layer of AI**
+
+The hardware part of the keynote is the easiest part to summarize, and it is also the most concrete evidence that HPE is committing the entire networking portfolio to the agentic-AI thesis. Six products, one for every layer.
+
+![](/posts/2026/2026-06-18/hpe-discover-2026-agentic-enterprise/images/image2.png)
+
+*The six new HPE Juniper Networking products for AI workloads: QFX5140, QFX5252, QFX5250, PTX12000, MX301, SRX4700*
+
+**2.1 HPE Juniper Networking QFX5252 --- The Scale-Up Switch for AMD Helios**
+
+The QFX5252 is a liquid-cooled scale-up switch tray designed specifically for AMD's Helios rack-scale AI platform. It supports UALink-over-Ethernet (UALoE), runs SONiC with AI-Native Operations, and --- per ServeTheHome's hands-on analysis --- is built around dual Broadcom Tomahawk 6 ASICs.
+
+Why this matters:
+
+- **Scale-up is the most painful problem in modern AI cluster design** --- every time you add another rack, the latency budget for the GPU-to-GPU links tightens.
+
+- **A purpose-built scale-up switch** that is co-designed with AMD's Helios rack is the kind of integration that hyperscalers (AWS, Azure, Google) have been doing internally for five years.
+
+- **Not a research project** --- HPE is now packaging it as a product that any enterprise or neocloud can buy.
+
+**2.2 HPE Juniper Networking QFX5250 --- 102.5 Tbps Scale-Out**
+
+The QFX5250 is the scale-out workhorse --- a liquid-cooled 102.5 Tbps switch for AI training and inference fabrics. Same Broadcom Tomahawk 6 silicon, but in the form factor and feature set for top-of-rack and spine deployments. It joins the existing QFX platform that HPE inherited from Juniper, but the 2026 version is fully integrated into HPE Networking Data Center Director (the Mist equivalent for data-center fabric management).
+
+**2.3 HPE Juniper Networking QFX5140 --- 16 Tbps Inference Switch**
+
+The QFX5140 is the one that caught my eye as the most differentiated. It is a 16 Tbps switch in 1RU --- an unusual capacity point, sitting between the common 12.8 T and 25.6 T tiers --- optimized for inference clusters and edge AI. Per Kennedy's breakdown, it uses the Broadcom Trident 5 ASIC. The capacity choice is deliberate: inference workloads (especially LLM serving with high KV-cache pressure) want lots of east-west bandwidth, but they do not need the full 25.6 T top-of-rack configuration. A 16 T sweet spot for inference is a real product insight.
+
+**2.4 HPE Juniper Networking PTX12000 --- 800 Gbps DCI Router**
+
+The PTX12000 is the inter-data-center router --- purpose-built for routing between AI training sites, with 800 Gbps per slot and ZR/ZR+ coherent optics support for up to ~1,000 km reaches. As organizations split training across multiple sites (or stitch together neocloud capacity with private capacity), the DCI router has become the unglamorous but critical plumbing.
+
+**2.5 HPE Juniper Networking MX301 --- 1.6 Tbps Inference Edge Router**
+
+The MX301 is a 1.6 Tbps in 1U full-duplex 400G router for the "Inference Edge" --- the new architectural tier between the data-center core and the campus/branch edge where inference traffic is increasingly terminating. It is based on HPE's 6th-generation Trio silicon and includes native AIOps management via Mist. Inference is moving closer to the user (because latency matters for agentic experiences, and bandwidth costs for round-tripping to a central data center are punishing), and the MX301 is the router for that architectural shift.
+
+**2.6 HPE Juniper Networking SRX4700 --- 1.4 Tbps Quantum-Safe Firewall**
+
+The SRX4700 is the one that enterprise CISOs will be tracking: a 1.4 Tbps quantum-safe firewall in 1U --- the first major enterprise firewall shipping with post-quantum cryptography as a default, not a future option. The TCO argument is that this is the only 1U appliance that can sit at the AI data-center edge and do wire-speed TLS termination with quantum-safe key exchange for every agent-to-agent connection. Per the HPE press release, it integrates with the new Unified SASE platform for zero-trust enforcement.
+
+The combined message: HPE now has a switch, a router, or a firewall for every layer of the AI data center, and every one of them runs through the same Marvis-driven agentic operations plane.
+
+**3. The Marvis Play: Self-Driving Networks as the Agentic Substrate**
+
+The hardware is the easy part. The harder --- and more important --- part of the keynote is what HPE is doing to the operations layer. The new story has three components.
+
+![](/posts/2026/2026-06-18/hpe-discover-2026-agentic-enterprise/images/image3.png)
+
+*The HPE Marvis self-driving framework: Marvis → Aruba Central, Mist, CX, QFX, agentic RCA engine*
+
+**3.1 Marvis Comes to Aruba Central**
+
+HPE Marvis is HPE's AI-driven network assistant --- the "self-driving" engine that Mist and Aruba Central customers have been using for campus and Wi-Fi troubleshooting. The 2026 release adds Marvis self-driving capabilities for HPE Aruba Central, including:
+
+- **Trusted actions** --- Marvis can now take remediation steps autonomously (e.g., reset a stuck wired port, re-balance a congestion hotspot), not just diagnose.
+
+- **Wired port remediation** --- a specific high-volume action that was previously the most common reason a network engineer had to log in at 2 AM.
+
+- **Conversational AI in Aruba Central** --- natural-language queries against the network ("why is the Boston office slow today?")
+
+The strategic significance is bigger than the individual features. Marvis is now the agentic brain for every HPE networking product, campus and data center alike. The agentic enterprise is not a separate product line --- it is the same Marvis engine running across Aruba Central for campus and Mist for the data center.
+
+**3.2 Mist Now Manages HPE CX Switches**
+
+Equally important: HPE Networking CX switches (the wired access line that HPE built before the Juniper acquisition) are now managed by HPE Mist. CX customers get the Mist agentic AIOps experience without having to replace their hardware, including:
+
+- **AI-native visibility** --- real-time per-port, per-client, per-application telemetry.
+
+- **Zero-touch provisioning** --- plug in a switch, it joins the fabric with the right config and policy.
+
+- **Wired assurance for layer-2 access** --- continuous validation of every VLAN, every trunk, every access port.
+
+- **Dynamic PCAP** --- on-demand packet capture triggered by Marvis when a fault is detected.
+
+- **Service-level insights** --- per-application latency, loss, and jitter budgets enforced automatically.
+
+- **HPE Marvis AI-driven actions** --- same trusted-action framework as the data-center side.
+
+This is the moment where HPE's "cross-pollination" strategy (the internal term for unifying the Aruba and Juniper lines post-acquisition) becomes visible to customers. A customer who bought Aruba CX switches three years ago now gets the same Marvis experience as a customer who bought Juniper QFX switches last quarter. From an IT-operations standpoint, the Aruba and Juniper product lines are now an integrated portfolio, not two parallel stacks.
+
+**3.3 The Reasoning Agent for the Data Center**
+
+The third piece is the most ambitious and the one that ties everything together: an advanced reasoning agent for high-confidence data-center remediation. Per the HPE press release, the agent:
+
+- **Continuously and autonomously reasons across diverse data streams**, including millions of TAC cases and a contextual graph database from HPE Networking Data Center Director.
+
+- **Delivers precise root cause analysis (RCA) and actionable remediation** in the data-center network.
+
+- **Uses predictive analytics to forecast system and optics failures** with high confidence before they occur.
+
+In other words, Marvis is now reading the entire historical TAC (Technical Assistance Center) case database --- every support ticket HPE has ever resolved --- and using that as its training corpus for root-cause reasoning. When a switch port starts flapping, Marvis is not just running a generic ML model. It is asking: "what did the TAC database say the last 4,000 cases of this symptom were?" and then proposing the fix that the best human support engineer would have proposed.
+
+This is the closest thing to a network-operations AGI that any vendor has shipped. It is also the first time that an enterprise networking vendor has built a closed-loop agentic remediation system that crosses from campus to data center to AI fabric.
+
+**4. The Four Business-Model Bets Behind the Networking Pitch**
+
+Why is HPE putting networking at the front of the keynote, and not compute? Because they are making four specific business-model bets about how the agentic-enterprise market will be monetized.
+
+![](/posts/2026/2026-06-18/hpe-discover-2026-agentic-enterprise/images/image4.png)
+
+*The four business-model bets: stickiest relationship, observability plane, highest margin layer, sovereign-AI buyer*
+
+**4.1 The Network Sits at the Longest Customer Relationship**
+
+Enterprise networking customers renew on 3-5 year hardware refresh cycles and 3-year software subscriptions (Aruba Central, Mist). Enterprise compute customers renew on 3-year server cycles with annual software. Enterprise GPU customers (when they exist) renew on 2-3 year cycles but most enterprises do not buy GPUs directly --- they buy AI services.
+
+The network is the longest-tenured, most-sticky relationship HPE has with its enterprise customers. If Marvis becomes the default agentic operations layer, HPE sits at the center of every IT-operations conversation for the next decade.
+
+**4.2 The Network Is the Only Layer That Sees Every AI Workload**
+
+A model only sees the prompts you send it. A GPU only sees the tensors it computes on. The network sees every API call, every agent-to-agent message, every data-pipeline traffic flow, every inference request and response. That makes the network the natural observability plane for agentic AI --- and the natural place to enforce policy, security, and cost controls.
+
+HPE's bet is that the network becomes the compliance and governance plane for agentic AI. If you want to know what your AI agents are doing, what data they are touching, and whether they are violating any policy --- the network log is where you will find it.
+
+**4.3 The Switch Margin Pool Is Bigger Than the GPU Margin Pool**
+
+This is the cynical-but-true read. NVIDIA's gross margin on Blackwell GPUs is extraordinary, but the per-rack networking TAM is also large --- and the per-port networking margin for HPE (after Juniper integration) is structurally higher than the per-GPU margin HPE can extract when it is reselling NVIDIA silicon. A full HPE AI rack includes compute (lower margin, NVIDIA-controlled), storage (medium margin, HPE-controlled), and networking (high margin, fully HPE/Juniper-controlled). The more networking HPE puts in the rack, the better the blended gross margin.
+
+**4.4 Sovereign and Regulated Buyers Care About Networking More Than Compute**
+
+The last bet is the regulatory one. Sovereign-AI buyers (governments, defense, healthcare, critical infrastructure) are not primarily worried about which GPU is in the box. They are worried about:
+
+- **Where the data flows** (network)
+
+- **Who can see the inference traffic** (network)
+
+- **How agent-to-agent traffic is authenticated and encrypted** (network, with quantum-safe crypto per the SRX4700)
+
+- **How network policy is enforced in real time (Marvis**, Unified SASE)
+
+For sovereign-AI buyers, the network is the compliance boundary. HPE's bet is that the HPE AI Factory Sovereign SKU --- announced in this keynote and explicitly positioned for governments and defense --- will be bought primarily on the strength of the networking story, not the GPU story.
+
+**5. The Vera Rubin / NVIDIA Layer: Why Jensen Huang Was Not on Stage This Year**
+
+A subtle but important detail, flagged by Patrick Kennedy in his live keynote blog: Jensen Huang was not on stage at HPE Discover 2026. He was on stage at Dell Tech World 2026 a few weeks earlier. The NVIDIA-HPE partnership is still very much intact --- the GTC 2026 announcements included Nvidia Vera Rubin NVL72 by HPE, HPE Cray Supercomputing GX240 blades for trillion-parameter models, expanded HPE Private Cloud AI with air-gapped configurations for sovereign buyers, and the HPE AI Factory at Scale validated design for neoclouds.
+
+But the absence of Jensen on the Venetian stage is a signal. HPE is signaling that the 2026 enterprise-AI conversation is about networking and operations first, compute second. NVIDIA is a critical partner, but HPE is no longer letting the NVIDIA keynote be the centerpiece of its own conference. That is a positioning decision, not a partnership decision.
+
+For builders, the practical implication is that HPE is positioning itself as the system integrator and operations layer of choice for NVIDIA-based AI factories --- not as a reseller of NVIDIA hardware. The Marvis + Mist + Aruba Central stack is what HPE is selling. The Vera Rubin systems are what you put behind it.
+
+**6. The Sovereign-AI Play: HPE AI Factory Sovereign, Marvis, and Quantum-Safe Networking**
+
+The piece of the keynote that got the least press coverage but probably matters most for regulated buyers is the HPE AI Factory Sovereign configuration, expanded at Discover 2026 with:
+
+- **Confidential computing as standard** across the entire HPE AI Factory with NVIDIA portfolio (per Neri's keynote).
+
+- **Air-gapped HPE Private Cloud AI** configuration (announced earlier in 2026, showcased at Discover).
+
+- **Quantum-safe networking** via the new SRX4700 firewall and Unified SASE.
+
+- **Marvis-driven operations that run fully on-premises**, with no requirement for cloud telemetry.
+
+- **NVIDIA Nemotron open models as part of the NVIDIA Agent Toolkit**, supported across ProLiant and AI factory servers.
+
+The sovereign-AI positioning is the only configuration where every layer of the stack --- compute, storage, networking, operations, security --- is HPE-controlled. That is the configuration that defense, intelligence, healthcare, and critical-infrastructure buyers are going to ask for first.
+
+If you are an AI builder whose customer is in a regulated industry, the HPE AI Factory Sovereign reference architecture is the one you should study. It is the closest thing to a turnkey on-premises agentic-AI deployment that any major vendor is shipping in 2026.
+
+**7. What This Means for the Rest of the Industry**
+
+Three implications for everyone else in the stack.
+
+First, Cisco and Arista have to respond. The "agentic enterprise" framing is now HPE's, and the most defensible position Cisco can take is the Hypershield and Nexus Dashboard agentic-AIOps story. Arista's response will be the Eos data-center agent and the CloudVision agentic-networking extensions. Expect both companies to spend the rest of 2026 trying to convince the market that "agentic networking" is not a Juniper/Mist heritage that HPE is benefiting from.
+
+Second, the hyperscalers will accelerate their on-premises networking investments. AWS, Azure, and Google have been quietly building agentic-netops capabilities for their on-premises offerings (AWS Cloud WAN, Azure Arc, Google Cloud NetApp volumes). The HPE keynote is now putting a marketing flag on the agentic-enterprise position. The hyperscalers will respond with their own agentic-netops stories, but they will have to ship actual on-premises networking hardware to compete --- which is structurally hard for them.
+
+Third, the Sovereign AI narrative is now a networking story. A year ago, sovereign-AI conversations were about GPUs, supply chains, and model weights. As of HPE Discover 2026, they are also --- and maybe primarily --- about where the inference traffic flows, who sees it, and how it is authenticated at line rate. The network is now the first thing a sovereign-AI buyer specs, not the last. If you are a vendor whose networking story is weak, your sovereign-AI story is now structurally compromised.
+
+**8. What to Do This Week**
+
+If you are an AI builder, an enterprise architect, or an infrastructure operator, here is the short list of what to do based on HPE Discover 2026.
+
+1. **Inventory your AI traffic flows.** You cannot manage agentic AI if you do not know what your agents are sending. Start with a one-week packet-capture exercise at the campus and data-center edge, and ask: how much of this is agent-to-agent, how much is agent-to-model, how much is model-to-data, and what is the latency budget for each? The answers will tell you whether you need a QFX5140 (inference edge), an MX301 (DCI), or an SRX4700 (zero-trust enforcement).
+
+2. **Pilot the Marvis + Aruba Central integration.** If you are an Aruba Central customer, the new Marvis self-driving capabilities are a free upgrade. Stand up a small pilot on a non-critical VLAN and let Marvis take trusted actions for a week. You will quickly learn whether your team's network-engineering workflow is ready for an agentic ops layer --- or whether you need to redesign the workflow first.
+
+3. **If you sell into regulated industries, study HPE AI Factory Sovereign.** It is the most complete turnkey on-premises agentic-AI reference architecture on the market today. Even if you do not buy HPE, the architecture (NVIDIA Vera Rubin + HPE CX/QFX networking + Mist/Marvis operations + Unified SASE + quantum-safe crypto) is the template that every sovereign-AI RFP in 2026-2027 will be evaluated against.
+
+4. **Map your networking TCO against the new HPE pricing.** HPE acquired Juniper for a reason. The networking portfolio is now a more aggressive competitor to Cisco, Arista, and the hyperscalers. If your networking refresh cycle falls in 2026-2027, this is the year to put HPE on the bid list --- even if you have not historically been an HPE networking customer. The QFX5250, MX301, and SRX4700 are competitive on price-performance against Cisco 8000, Arista 7800R3, and Palo Alto 7000-series respectively.
+
+5. **Watch for the quantum-safe migration timeline.** The SRX4700 is the first major enterprise firewall shipping with post-quantum crypto as a default. If you are subject to CNSA 2.0 (the U.S. National Security Agency's Commercial National Security Algorithm Suite 2.0), the migration to quantum-safe key exchange is no longer optional after 2030 --- and the SRX4700 lets you start the migration now. If you are not subject to CNSA 2.0, you still have 3-5 years before "harvest-now, decrypt-later" becomes a serious risk, but planning should start this year.
+
+**The Bottom Line**
+
+HPE Discover 2026 was, on the surface, an enterprise-IT conference. Under the surface, it was the moment that the agentic-enterprise conversation moved from models and agents to networks and operations. Antonio Neri and Rami Rahim used the keynote to argue --- convincingly --- that the network is the new OS for agentic AI, and they shipped the hardware, the software, and the operations engine to back it up.
+
+The single sentence to remember:
+
+***"The success of agentic AI in the enterprise depends on a modern networking foundation built for autonomous workflows, where network performance, reliability, and intelligence determine the effectiveness of the entire AI architecture." --- Rami Rahim, EVP & GM, Networking, HPE***
+
+**If you are building agentic AI and you have not yet thought about the network as the primary control plane --- the Marvis-driven, Unified-SASE-wrapped, quantum-safe, sovereign-ready, vendor-controlled plane --- you are building on top of the substrate that HPE just claimed.**
+
+**The era of AI as a model-on-a-server is over. The era of AI as an agentic network is here.**
+
+**Sources**
+
+*HPE press release, "HPE expands self-driving networks across edge, campus, data center, and AI factories" (June 16, 2026, hpe.com/newsroom); ServeTheHome, "HPE Discover 2026 Keynote Coverage" (live blog, June 16, 2026, by Patrick Kennedy); Data Center Knowledge, "HPE Puts Networking at the Center of AI at Discover 2026" (June 2026); TechFinitive, "HPE triples down on agentic enterprise at HPE Discover Las Vegas 2026"; HPE Discover 2026 registration and agenda pages (hpe.com/us/en/discover/lasvegas); NVIDIA at HPE Discover 2026 page (nvidia.com/en-us/events/hpe-discover); HPE Q1 2026 press release on NVIDIA innovations (hpe.com/newsroom, March 2026); HPE Marvis AI product page (hpe.com/us/en/marvis-ai.html); HPE Networking AIOps page (hpe.com/us/en/networking/aiops.html); HPE and Juniper QFX5250 buyer guide (Network Devices Inc, 2026); CNSA 2.0 migration guidance (NSA, 2024-2025); CRN, "Nvidia GTC 2026: HPE Unveils Vera Rubin Systems, Expands Private Cloud AI Portfolio" (March 2026).*

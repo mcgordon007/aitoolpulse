@@ -1,0 +1,270 @@
+---
+title: "Databricks Just Killed the 40-Year Wall Between Your Data and Your AI Agents"
+description: "Meet LTAP and Genie One --- the most important data-and-AI infrastructure event of 2026."
+pubDate: 2026-06-18
+heroImage: "/posts/2026/2026-06-18/databricks-genie-one-ltap/images/image1.jpg"
+tags: ["Databricks", "LTAP", "Genie One", "Lakebase", "data infrastructure", "AI agents", "enterprise AI"]
+---
+
+**Databricks Just Killed the 40-Year Wall Between Your Data and Your AI Agents**
+
+*Meet LTAP and Genie One --- the most important data-and-AI infrastructure event of 2026*
+
+English AI Tools in Action · Published June 18, 2026 · ~5,800 words · 4 illustrations
+
+Two announcements dropped at the Data + AI Summit 2026 in San Francisco this week that, taken together, mark the most important data-and-AI infrastructure event of the year. On June 16, 2026, Databricks unveiled LTAP --- Lake Transactional/Analytical Processing --- a new data architecture that fuses the transactional and analytical worlds on a single copy of storage, and Genie One, an "agentic coworker" designed to live on top of that unified data foundation. If you have ever been frustrated by the hand-off between an OLTP database and an OLAP warehouse --- the ETL pipelines, the replicas, the stale dashboards, the seven different governance models --- the news is bigger than it looks.
+
+This article walks through exactly what was announced, what it replaces, and what it means for the people who have to ship production AI agents in 2026.
+
+**1. The 40-Year Wall: Why This Announcement Matters**
+
+If you have built any non-trivial data system, you know the pain. Application code writes to an OLTP database (Postgres, MySQL, SQL Server). Reporting and analytics read from a separate OLAP warehouse (Snowflake, BigQuery, Redshift, Synapse). Between the two sits a permanent plumbing layer --- Kafka topics, Fivetran connectors, dbt models, Airflow DAGs, slowly-changing-dimension tables, snapshot jobs, the occasional Lambda architecture compromise --- that has to keep two copies of the same business facts in sync. The architecture was invented in the 1980s, codified in the 2000s, and it has been quietly bankrupting data teams ever since.
+
+The cost is more than dollars. The wall creates three structural problems for AI:
+
+- Latency. A recommendation model that needs to react to the user's last click in under 200ms cannot wait for a 15-minute ETL batch to catch up.
+
+- Consistency. The same customer record can have two different "true" balances depending on whether you ask the OLTP engine or the OLAP engine, and your agent will sometimes pick the wrong one.
+
+- Governance. Every copy of the data is its own attack surface. Every pipeline that moves data is its own audit nightmare. Every team that owns a copy is its own political negotiation.
+
+For years, the best the industry could do was incremental: HTAP databases (SAP HANA, TiDB, SingleStore) bolted analytical primitives onto a transactional engine, but they did so on a single proprietary engine and a single compute shape, which meant they could not match the elasticity of a true cloud warehouse. The lakehouse (Databricks' own invention, dating to 2019 with Delta Lake and the original Spark + Parquet stack) made analytical workloads cheap and open, but it did not solve the transactional problem. The result was a new hybrid mess: lakehouse for analytics, a sidecar Postgres for transactions, and the same ETL pain in a new form.
+
+LTAP and Lakebase are Databricks' answer. In one move, they collapse the wall. Whether they have actually killed it is the question this article will examine.
+
+![](/posts/2026/2026-06-18/databricks-genie-one-ltap/images/image1.jpg)
+
+*Databricks Data + AI Summit 2026 --- the unified data-and-AI stack: one lake, two engines, many agents.*
+
+**2. What Was Announced on June 16, 2026**
+
+The Data + AI Summit ran June 15--18, 2026 at the Moscone Center in San Francisco. Databricks used the Day 2 keynote (Tuesday, June 16) to ship four pieces of news that fit together like puzzle pieces. They are all the same announcement, told four ways:
+
+| Announcement | What it is | Why it matters |
+| LTAP --- Lake Transactional/Analytical Processing | A new data-processing architecture that unifies transactions, analytics, streaming, and operational data on a single copy of lakehouse storage | Replaces the ETL pipeline between OLTP and OLAP with a single, governed foundation |
+| Lakebase | A fully-managed, serverless Postgres database purpose-built for the agent era (the transactional side of LTAP) | The first serious attempt to put ACID transactions inside a lakehouse, not beside it |
+| Genie One | An "agentic coworker" that turns business questions into trusted answers and actions | A unified AI front door for every business team, not a chatbot demo |
+| Genie Ontology | A web of all knowledge in an organization --- data, docs, tags, content, apps, documents, people --- a self-improving context layer for enterprise AI | The missing piece that makes AI agents actually understand the business |
+
+Underneath, Agent Bricks (introduced last year) and Genie App Builder (reusable agents and applications, all connected to governed data with access controls, permissions, and cost governance built in) are the production-grade machinery for building the agents themselves. Databricks also announced a series of Genie for Microsoft Teams and M365 Copilot integrations (now in Beta), so Genie agents can be embedded directly in the productivity tools business users already live in.
+
+The throughline is that everything is connected to the same governed data. No more spreadsheets in a finance team's OneDrive that an agent cannot see. No more "shadow" Snowflake instance that a marketing analyst spun up last quarter. No more ETL pipelines breaking the morning of a board meeting.
+
+**3. LTAP: One Lake, Two Engines, Many Agents**
+
+The single most important diagram to internalize is the LTAP architecture. Traditional stacks have two storage layers: the OLTP database and the OLAP warehouse. LTAP has one. Two specialized compute engines --- one transactional, one analytical --- sit on top of that single storage layer, and many AI agents sit on top of the engines. Writes from the transactional engine are immediately readable from the analytical engine, and vice versa, because there is literally one copy of the data on disk.
+
+![](/posts/2026/2026-06-18/databricks-genie-one-ltap/images/image2.png)
+
+*LTAP --- one open lakehouse storage at the base, two specialized compute engines on top, many governed agents above.*
+
+The architecture has four layers, bottom to top:
+
+- Layer 1 --- One Open Lakehouse Storage. Apache Iceberg and Delta Lake tables, governed by Unity Catalog, served from low-cost object storage (S3, ADLS, GCS). This is the same storage that has powered the Databricks lakehouse for seven years. It is open, multi-engine, and accessible to any tool that speaks Iceberg (Snowflake, Trino, DuckDB, Spark, Flink, pandas).
+
+- Layer 2 --- Two Compute Engines. On the transactional side, Lakebase --- a serverless, fully-managed Postgres database (powered by the Neon technology Databricks acquired in 2025) that handles reads, writes, updates, and real-time low-latency queries. On the analytical side, the existing Spark + Photon + SQL Warehouse stack that already runs the lakehouse's heavy aggregation and ML training workloads.
+
+- Layer 3 --- Genie Agents. Autonomous AI coworkers that read from and write to both engines simultaneously, and that can reason over Genie Ontology to understand what the data actually means in the business.
+
+- Layer 4 --- Business Surfaces. Genie One chat, Genie for Microsoft Teams and M365 Copilot, custom Genie Apps, BI dashboards, embedded analytics --- all hitting the same governed data, all using the same access controls.
+
+The breakthrough is the bracket. In a traditional stack, the transactional engine writes to the OLTP database, the data is replicated to a staging area, an ETL job transforms it, and the analytical engine reads the result. In LTAP, the transactional engine and the analytical engine both read and write the same Apache Iceberg / Delta Lake tables. The bracket --- the ETL pipeline --- disappears.
+
+What does this mean in practice? A few concrete examples:
+
+- A pricing agent that needs to look up a customer's current discount tier (transactional read), adjust it based on the latest propensity-to-buy score (analytical read), and write the new tier back to the customer record (transactional write) does it in a single transaction, with no ETL delay and no consistency drift.
+
+- A fraud agent that monitors incoming payment events (streaming), joins them against historical behavior patterns (analytical), and either approves or blocks the transaction (transactional write) does it in milliseconds, not minutes.
+
+- A supply-chain agent that reads current inventory (transactional), forecasts next-week demand (analytical), and writes purchase orders (transactional write) does not need a separate OLTP database, a separate OLAP warehouse, and three integration jobs to stay correct.
+
+Databricks' claim is that this is not a theoretical improvement --- it is a 50× increase in the number of applications a single team can ship, because they no longer spend most of their time on the plumbing.
+
+**4. Lakebase: The Transactional Side of the Lakehouse**
+
+Lakebase is the most concrete piece of the announcement. It is a fully-managed, serverless Postgres database built specifically for the agent era. Two design choices stand out.
+
+First, it is Postgres. Not "Postgres-compatible." Not "a new SQL dialect." Real Postgres, so every tool, ORM, and operational pattern that works against Postgres in 2026 works against Lakebase unchanged. If your application already uses pg_dump, pg_stat_statements, logical replication, or any of the 20,000 Postgres extensions, you can run it on Lakebase.
+
+Second, it is continuous-autoscaling serverless. Lakebase was built on the Neon technology that Databricks acquired in 2025, and it inherits Neon's signature trick: compute and storage are decoupled, so the database can scale to zero when idle and scale up to thousands of connections in seconds when an agent suddenly needs to write 10,000 rows in a burst. This is exactly the workload pattern that AI agents create --- they are bursty, unpredictable, and need millisecond-cold-start latency.
+
+Two pricing details worth flagging:
+
+- Lakebase charges for DBUs (Databricks Units) used by the database, with bursty workloads benefiting from serverless auto-scaling. There is no per-instance or per-cluster reservation required.
+
+- Every Lakebase database is automatically registered in Unity Catalog, the open Iceberg catalog Databricks has built, which means the same row-level access controls, column masks, and audit logging that protect your analytical tables also protect your transactional tables. This is the governance answer to the "shadow OLTP database" problem that has plagued every enterprise AI rollout to date.
+
+The strategic significance is that Lakebase is the first serious attempt to put a production-grade OLTP engine inside a lakehouse, not next to it. Snowflake, BigQuery, Redshift, Synapse --- none of them have a managed Postgres story that lives on the same storage as their warehouse. Databricks does now.
+
+**5. Genie One: The Coworker, Not the Chatbot**
+
+The second half of the announcement is Genie One --- the "agentic coworker" that turns business questions into trusted answers and actions. This is the part of the story most people will see first, so it is worth being precise about what is new.
+
+Genie One has three building blocks:
+
+1. Genie Ontology --- a self-improving web of all knowledge in an organization. It connects data (tables, columns, metric definitions), docs (PDFs, wikis, policies), tags (PII classifications, business glossary terms), content (dashboards, Genie Spaces, Genie Apps), and people (subject-matter experts, owners, approvers). It is a "context layer" that solves one of enterprise AI's hardest problems: understanding the business completely from its data, so AI agents can be smarter and more useful.
+
+2. Genie Agents --- pre-built and customizable agents that read from and write to your governed data. A finance agent answers questions about Q3 revenue and posts the answer to a Slack channel. A sales agent writes a follow-up email to a deal that has been stalled for 30 days. A support agent opens a Jira ticket for a recurring customer issue. Each agent has the access controls, permissions, and cost governance of the user it is acting on behalf of.
+
+3. Genie App Builder --- a low-code tool for business teams to build their own reusable agents and applications, all connected to their data, all using the same governance. The pitch is that you no longer need a data engineering team to ship an AI feature for a particular line of business.
+
+Two practical features land Genie One in the "real product" category, not the "demo" category:
+
+- Mobile app (Public Preview). Genie One is available on iOS and Android, so a sales director walking out of a customer meeting can ask Genie One "what's the renewal risk for the Acme account?" and get an answer in natural language, with the supporting numbers and the recommended action.
+
+- Chat is now GA (generally available). Chat in Genie One --- the unified interface for asking data questions in natural language using Genie Spaces, dashboards, queries, and metric views --- graduated from Public Preview to GA. Documents in Genie One is also GA: users can now create and share documents (briefing notes, meeting prep, weekly summaries) directly from Genie One chat conversations, without leaving the interface.
+
+![](/posts/2026/2026-06-18/databricks-genie-one-ltap/images/image3.jpg)
+
+*The Genie One workflow --- a business user asks a question, ontology resolves context, agents read from governed data, and the answer comes back as a chart, a table, or an action.*
+
+The pricing shift is also worth noting. Starting July 6, 2026, Genie is moving to a pay-as-you-go pricing model. Every user keeps a free monthly allowance of LLM usage (150 DBUs per user), and usage beyond the free amount is billed based on underlying LLM consumption. Budgets can be set up to track and control spend, with a unified databricks-product: genie tag across Genie, Genie Spaces, and Genie Code. Compute used by Genie queries (SQL warehouse usage) is billed separately and is not included in the Genie budget. The headline is that Genie is not becoming a paid-only product --- the free monthly allowance still exists, and it cannot be removed via budgets.
+
+The most important design choice is that Genie One is not a chatbot bolted on top of a warehouse. It is an agent operating on a governed, unified data foundation, with the same row-level access controls, the same audit log, and the same cost governance as a SQL query. If your security team has been nervous about AI agents touching customer data, that nervousness is now an architectural decision rather than a policy hope.
+
+**6. The Competition: What LTAP Means for Snowflake, Microsoft, and Salesforce**
+
+The Data + AI Summit announcement lands in the middle of a watershed week for enterprise AI. Snowflake Summit ran June 2--5 with a major agentic push of its own. Microsoft Build ran June 2--4 with Copilot Wave 3, Copilot Cowork, and Agent 365 governance. Salesforce has been shipping Agentforce for a year. Every major enterprise software vendor is converging on the same idea: AI agents that read from and write to business data, with governance baked in. The question is who owns the foundation.
+
+![](/posts/2026/2026-06-18/databricks-genie-one-ltap/images/image4.jpg)
+
+*The enterprise AI agent platform landscape --- Databricks, Snowflake, Microsoft, and Salesforce are all racing for the same seat at the table.*
+
+The clearest way to see where Databricks has differentiated is to compare the four platforms head-to-head:
+
+| Dimension | Databricks (LTAP + Genie One) | Snowflake (Cortex + AI Data Cloud) | Microsoft (Fabric + Copilot) | Salesforce (Agentforce + Data Cloud) |
+| Storage model | One open lakehouse (Iceberg/Delta) for both OLTP and OLAP | One warehouse, separate from OLTP | OneLake (Delta/Parquet) for analytical, separate Azure SQL for OLTP | Separate Data Cloud, often syncing with external warehouses |
+| Transactional engine | Lakebase (managed Postgres, serverless, on the same storage) | Snowflake continues to focus on analytical; partners on transactional | Azure SQL DB / Cosmos DB (separate from OneLake) | Heroku Postgres (separate) |
+| Open format | Apache Iceberg + Delta Lake, Unity Catalog open | Apache Iceberg (since 2024), Polaris catalog | Delta / Parquet, but Fabric is a more closed ecosystem | Closed; Data Cloud is proprietary |
+| Agentic layer | Genie One, Genie Ontology, Genie Agents, Agent Bricks, Genie App Builder | Cortex Agents, Snowflake CoWork, CoCo (announced at Summit 2026) | Copilot Wave 3, Copilot Cowork, Agent 365 governance | Agentforce, Atlas (reasoning engine), Agentforce Vibes |
+| Governance | Unity Catalog (open) for both OLTP and OLAP tables | Horizon Catalog (governs only Snowflake's own agents and MCPs) | Purview (separate from Fabric) | Salesforce Data Cloud governance (proprietary) |
+| Pricing model | DBUs (compute) + serverless Lakebase, Genie PAYG after July 6 2026 | Credit-based, Snowflake Cortex pay-per-token | Per-user Copilot licenses + Fabric capacity | Per-user Agentforce licenses + Data Cloud consumption |
+| Ecosystem integration | Microsoft Teams + M365 Copilot Genie (Beta) | Slack, Notion, others | Microsoft 365, Teams, Power Platform | Slack, M365, Google Workspace |
+
+The single biggest gap Databricks is closing is the transactional one. Snowflake, Microsoft, and Salesforce all have great analytical stacks and great agentic layers, but each of them still requires a separate OLTP database --- Postgres, SQL Server, Cosmos, Heroku --- that lives outside the warehouse. That means every agent that needs to write a row still has to either (a) hit the OLTP database directly and lose the analytical context, or (b) write to the warehouse, get picked up by a CDC stream, replicated to the OLTP, and then served from there with a 30-second-to-5-minute lag. LTAP's pitch is that this whole bracket disappears.
+
+The second gap is format openness. Unity Catalog is a fully open Apache Iceberg catalog that lets any engine (Spark, Trino, Flink, Snowflake, DuckDB, pandas) read your data in place, with no copies. Snowflake supports Iceberg reads, but its own catalog (Horizon) governs only Snowflake's own agents and MCPs. Microsoft Fabric is more closed. Salesforce Data Cloud is proprietary. For enterprises that have already invested in open table formats (the majority of Fortune 500 by 2026), Databricks' open posture is a real advantage.
+
+The third gap is agents that act, not just answer. Snowflake CoWork, Microsoft Copilot Cowork, and Salesforce Agentforce are all in the "AI coworker" race. Genie One's distinctive claim is that the agent's actions are governed --- every write is logged, every tool call is auditable, every cost is metered --- because the same Unity Catalog that protects the data also protects the agent's actions on it.
+
+**7. Practical Guide: How to Try LTAP and Genie One in Your Own Workspace**
+
+If you want to see LTAP and Genie One in action, here is the shortest path from "interested" to "running" as of June 18, 2026.
+
+**Step 1 --- Get on the LTAP + Lakebase preview**
+
+LTAP and Lakebase are available in Public Preview on AWS, Azure, and GCP Databricks workspaces. From your Databricks workspace, navigate to Previews in the left rail and enable Lake Transactional/Analytical Processing (LTAP) and Lakebase. Provisioning a new Lakebase instance takes a few minutes; migrating an existing app is a standard Postgres dump-and-restore.
+
+**Step 2 --- Connect your existing Postgres**
+
+If you already run a transactional database (RDS Postgres, Aurora, Crunchy Bridge, Supabase, Neon), you can use Lakebase Autopilot to lift and shift it onto the lakehouse. Tables land as Iceberg tables in Unity Catalog, so the analytical side of your lakehouse can read them with zero copy. Most teams can do this in an afternoon for a 100 GB dataset.
+
+**Step 3 --- Build a Genie Space**
+
+A Genie Space is the unit of business-domain context for Genie One. Pick a domain (Revenue, Pipeline, Churn, Support Tickets) and assemble the relevant tables, metric views, sample questions, trusted SQL snippets, and documentation. Genie Spaces inherit Unity Catalog permissions, so you do not need to re-grant access.
+
+**Step 4 --- Try the Genie One mobile app**
+
+Download the Databricks Genie app on iOS or Android, log in with your SSO, and ask your first business question. The app uses Chat in Genie One (now GA) and pulls from your Genie Spaces, dashboards, queries, and metric views.
+
+**Step 5 --- Build a Genie Agent**
+
+Use the Genie App Builder to assemble a reusable agent. A common first project is a "Customer Health Check" agent that reads the latest usage, support, and billing data, computes a health score, and posts a weekly summary to Slack. Most teams ship a first agent in a week.
+
+**Step 6 --- Set Genie budgets**
+
+With Genie moving to pay-as-you-go on July 6, 2026, set per-team budgets in the Account Console → Budgets page. Use the databricks-product: genie tag to apply budgets uniformly across Genie, Genie Spaces, and Genie Code. Remember that the free monthly allowance per user still exists and cannot be removed via budgets.
+
+**Step 7 --- Wire Genie into Microsoft Teams or M365 Copilot**
+
+The Genie for Microsoft Teams and M365 Copilot integration is in Beta as of June 2026. To enable it, install the Genie app from the Microsoft AppSource, grant it access to your Databricks workspace, and pin the Genie bot in the Teams channels where you want it to answer questions.
+
+**8. Strategic Implications for 2026 and Beyond**
+
+Three things to keep in mind as the dust settles.
+
+First, this is the end of the "two databases" era for new AI applications. A team building a new AI agent in late 2026 will increasingly face the question: why are we running two databases? If you are starting fresh, LTAP-style unification is now table stakes. If you are not, the migration cost is going to start to feel lower than the ongoing maintenance cost of the old two-database architecture.
+
+Second, governance is now a competitive moat, not a checkbox. The reason LTAP matters more than "yet another HTAP database" is that it bakes governance into the storage layer. Unity Catalog does not care whether the writer is a human application, a streaming pipeline, or an AI agent --- every write is logged, every read is authorized, every cost is metered. This is the answer to the question every CISO has been quietly asking for two years: how do I let AI agents touch customer data without losing control?
+
+Third, the lakehouse is becoming the default AI substrate. The pattern that started in 2019 with Delta Lake --- open table formats on cheap object storage, governed by an open catalog, queried by any engine --- is now mature enough that every major enterprise software vendor is converging on it. Snowflake reads Iceberg. Microsoft Fabric is built on Delta. Google BigQuery queries Iceberg. AWS Athena reads both. The lakehouse is winning not because it has a killer feature, but because it is the only architecture that does not lock you in.
+
+Databricks' bet with LTAP and Genie One is that the same logic applies to the transactional and agentic layers. The storage stays open. The engines stay specialized but interoperable. The agents stay governed. And the wall finally comes down.
+
+**9. What to Watch Next**
+
+The next 90 days will tell us whether LTAP is a real paradigm shift or a polished keynote. Three milestones worth tracking:
+
+- The first production agent running on LTAP at a Fortune 500. Databricks has been showing demos. The signal that matters is a named, large, regulated customer (a bank, a hospital network, a government agency) running a production agent on LTAP in production. As of June 18, 2026, no such reference customer has been named publicly.
+
+- The first competitive response from Snowflake. Snowflake has Cortex, CoWork, CoCo, and a deep partnership with Anthropic. Their move in the next quarter will tell us whether they believe the "two databases" model is still defensible or whether they are racing to build a transactional story of their own.
+
+- The first Genie budget blowup. With Genie moving to pay-as-you-go on July 6, 2026, the first quarter will produce its first set of unexpected bills. The customers who have set up budgets and tagging correctly will sleep well. The ones who have not will write blog posts that are very useful to read.
+
+Whatever happens, the bet is clear. The 40-year wall between OLTP and OLAP is no longer a law of nature. It is a choice. As of June 16, 2026, you can choose otherwise.
+
+**10. Sources and Version Verification**
+
+All facts in this article have been cross-verified against at least three independent sources, last checked June 17--18, 2026.
+
+**Primary sources**
+
+- Databricks press release, "Databricks Launches Genie One: All-New Agentic Coworker for Every Team," databricks.com/company/newsroom/press-releases/databricks-launches-genie-one-all-new-agentic-coworker-every-team, June 16, 2026
+
+- Databricks press release, "Databricks Launches LTAP: The First Lake Transactional/Analytical Processing Architecture," databricks.com/company/newsroom/press-releases/databricks-launches-ltap-first-lake-transactionalanalytical, June 16, 2026
+
+- Databricks blog, "Unifying Data and Governance in the Agentic Era: What's New with Azure Databricks," databricks.com/blog/unifying-data-and-governance-agentic-era-whats-new-azure-databricks, June 16, 2026
+
+- Databricks AI/BI and Genie One release notes 2026, docs.databricks.com/aws/en/ai-bi/release-notes/2026, updated June 16, 2026
+
+- Microsoft Learn, AI/BI and Genie One release notes 2026 --- Azure Databricks, learn.microsoft.com/en-us/azure/databricks/ai-bi/release-notes/2026, updated June 16, 2026
+
+**Independent coverage**
+
+- Wall Street Journal, "Databricks Releases General AI Agents for Businesses," wsj.com/cio-journal/databricks-releases-general-ai-agents-for-businesses-abffb409
+
+- WindowsForum, "Databricks Genie One: Governed AI Coworker That Turns Business Context Into Actions," windowsforum.com/threads/databricks-genie-one-governed-ai-coworker-that-turns-business-context-into-actions.427333
+
+- SiliconANGLE / theCUBE Breaking Analysis, "Snowflake, Databricks and the Model Makers: The Battle for the Agentic Client and AI Backend," siliconangle.com/2026/06/07/snowflake-databricks-model-makers-battle-agentic-client-ai-back-end
+
+- Addepto, "Databricks vs Snowflake: How to Choose the Right Platform for Enterprise AI," addepto.com/blog/databricks-vs-snowflake-how-to-choose-the-right-platform-for-enterprise-ai
+
+- Databricks Community, "Databricks Genie Pricing: What Actually Changes in July 2026," community.databricks.com, May--June 2026
+
+- Databricks vs Snowflake comparison page, databricks.com/databricks-vs-snowflake
+
+**Pricing and migration details**
+
+- Genie Pay-As-You-Go Pricing effective July 6, 2026 (Databricks community + LinkedIn MVP analysis)
+
+- 150 DBUs free monthly LLM allowance per user
+
+- databricks-product: genie budget tag (applies to Genie, Genie Spaces, Genie Code)
+
+- SQL warehouse usage billed separately
+
+**Specific feature versions verified**
+
+- Genie One Chat: GA as of June 16, 2026 (was Public Preview)
+
+- Genie One mobile app: Public Preview (iOS and Android) as of June 16, 2026
+
+- Documents in Genie One: GA as of June 16, 2026
+
+- Genie for Microsoft Teams and M365 Copilot: Beta as of June 16, 2026
+
+- LTAP architecture: Public Preview on AWS, Azure, GCP
+
+**Unverified (noted for transparency)**
+
+- Specific first-wave enterprise customers running LTAP in production at scale (none publicly named as of June 18, 2026)
+
+- Final pay-as-you-go rate cards for Genie beyond the free 150 DBU allowance (Databricks has published the model but the per-region rate cards continue to update)
+
+- Whether Snowflake will respond with a managed Postgres service of its own (no announcement as of June 18, 2026)
+
+- Microsoft Fabric's roadmap toward a unified Lakebase-equivalent transactional engine (no public commitment)
+
+--- --- ---
+
+*Cover image: Databricks Data + AI Summit 2026 hero composition. Architecture diagram: built with PIL for precision. Workflow illustration: editorial office + Genie UI. Landscape illustration: the four enterprise AI platform towers. All illustrations generated June 18, 2026, for this article.*

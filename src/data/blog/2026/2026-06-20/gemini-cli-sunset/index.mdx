@@ -1,0 +1,242 @@
+---
+title: "Gemini CLI Sunset: How Google Shut Down Its 105,000-Star Open-Source Tool and Replaced It with Closed-Source Antigravity"
+description: "On June 18, 2026, Google retired the open-source Gemini CLI and pushed free, Pro, and Ultra users to the closed-source Antigravity CLI. Here's what you lost, what you got, and what to do this week."
+pubDate: 2026-06-20
+heroImage: "/posts/2026/2026-06-20/gemini-cli-sunset/images/image1.png"
+tags: ["Google", "Gemini CLI", "Antigravity CLI", "developer tools", "open source", "AI agents"]
+---
+
+![](/posts/2026/2026-06-20/gemini-cli-sunset/images/image1.png)
+
+*Figure 1: Editorial cover --- Gemini CLI's 105,000-star open constellation eclipsed by the closed-source AGY monogram.*
+
+On June 18, 2026, Google's **Gemini CLI** --- the open-source AI terminal agent that became the fastest-growing developer tool of 2025 --- stopped serving requests to every free, Pro, and Ultra user. The replacement is **Antigravity CLI (`agy`)**, a closed-source Go rewrite that Google openly admits does not yet have feature parity with the tool it just killed.
+
+If you spent the last year piping `gemini` into your terminal, this is the article that tells you what you actually lost, what you got, and what to do this week.
+
+────────────────────────────────────────────────────────────
+
+# §1 --- What happened on June 18
+
+The deadline fell at **00:00 UTC on June 18, 2026** --- exactly **30 days** after Google announced the transition at Google I/O 2026 on May 19. From that moment, `gemini` requests from personal Google accounts (free, Google AI Pro at $20/month, Google AI Ultra at $100/month) returned errors instead of completions. The Google AI Studio API key path and the Vertex AI enterprise path are untouched.
+
+Google announced the cutover in a single blog post titled *"An important update: Transitioning Gemini CLI to Antigravity CLI"* on the Google Developers Blog. Group product manager **Dmitry Lyalin** framed it as a "unification" of Google's agent-first developer tools. The post contained three things developers noticed immediately:
+
+1. **A non-apology.** "We are unifying our agent-first development tools" --- Google's phrasing for a closed-source replacement of an Apache 2.0 product.
+
+2. **An enterprise exemption.** "Gemini Code Assist Standard and Enterprise" customers keep working exactly as before. Only the community that built Gemini CLI loses direct access.
+
+3. **A community-forum link** to a brand-new `github.com/google-antigravity/antigravity-cli` repository --- with no public source code.
+
+The Gemini CLI repository at `google-gemini/gemini-cli` is still online. The LICENSE file still says Apache 2.0. There are still 105,000 stars on it. But the README's "Authentication options" section now ends with a single line: *"Gemini CLI has been retired. Please migrate to Antigravity CLI."* You can read every line of the source code Google built, but you cannot run it against Google's models without an enterprise contract.
+
+────────────────────────────────────────────────────────────
+
+![](/posts/2026/2026-06-20/gemini-cli-sunset/images/image2.png)
+
+*Figure 4: The 6,000 merged pull requests that built Gemini CLI --- fading into closed-source lock icons.*
+
+# §2 --- The bait-and-switch the community is calling "sickening"
+
+The community that built Gemini CLI is not being polite about this.
+
+In the official Gemini CLI discussion thread #27274, contributor **@lingyaochu** posted the line that has since been screenshot and quote-tweeted hundreds of times:
+
+> *"That's what you done, Google, open source Gemini CLI, get developers contribute to this, and then migrate the code to a close source project."*
+
+TechTimes' May 29 piece captured the mood in its headline --- *"Furious Developers Accuse 'Sickening' Google Gemini CLI Bait-and-Switch"* --- and laid out the numbers: **more than 6,000 merged pull requests** from hundreds of independent volunteers, **525 published releases**, an Apache 2.0 license that explicitly grants anyone the right to use, modify, and share the code, all while Google cited those same contributions as evidence of the project's success in its I/O 2026 keynote.
+
+The Linux Foundation spotlight piece that ran alongside the TechTimes coverage framed it as a "new single point of failure" for the open-source AI ecosystem: a permissive license is only as good as the API it talks to. When Google unilaterally stops serving requests to non-paying users, the codebase becomes an archive.
+
+There is one piece of the criticism worth taking seriously. Lyalin's GitHub reply to the criticism included this sentence:
+
+> *"The Gemini CLI repository remains available to the community as an Apache 2.0 licensed repository with no changes."*
+
+What he did not say is that **without a Google backend serving requests, the codebase becomes an archive.** The license grants permission. The license does not grant a free API. The two are different things, and developers learned that distinction the hard way on June 18.
+
+The New Stack put it bluntly in its May 21 coverage: *"Google pushes Pro, Ultra, and free users from open-source Gemini CLI to closed-source Antigravity CLI."* It is the first sentence. There is no headline-debate space about whether this is unification or replacement. The replacement is the headline.
+
+────────────────────────────────────────────────────────────
+
+![](/posts/2026/2026-06-20/gemini-cli-sunset/images/image3.png)
+
+*Figure 2: Antigravity 2.0 ships five surfaces sharing one agent harness.*
+
+# §3 --- What Antigravity CLI actually is (and is not)
+
+Antigravity CLI is the terminal surface of **Antigravity 2.0**, the agent-first development platform Google announced alongside the model lineup at I/O 2026. It is built in **Go**, not Node.js. It shares the same agent harness as the Antigravity desktop app, the Antigravity SDK, the Managed Agents API, and the Gemini Enterprise Agent Platform. Per Antigravity's official docs at `antigravity.google/docs/cli-overview`, all five surfaces share the same authentication, the same Skills directory, and the same model router (Gemini 3.5 Flash as the default agent model).
+
+What it ships with on day one:
+
+- **`agy` CLI binary** --- single executable for macOS, Linux, and Windows. Installation via Antigravity's download page or `brew install antigravity`.
+
+- **Antigravity Skills** --- directory-based packages containing a `SKILL.md` file plus optional scripts/references/templates. Skills teach the agent specialized knowledge (a Git formatter, a template generator, a tool scaffolding workflow). The codelab is published at `codelabs.developers.google.com/getting-started-with-antigravity-skills`.
+
+- **Antigravity Subagents** --- defined in a `~/.gemini/antigravity-cli/skills/<my-agent>/agent.json` file. Each subagent has a defined scope, allowed tools, and a prompt. The CLI can spawn parallel subagents inside a single conversation.
+
+- **Antigravity Plugins** --- the renamed version of Gemini CLI's "Extensions" framework, migrated automatically on first launch.
+
+- **Sandbox mode** --- configurable via `~/.gemini/antigravity-cli/settings.json`. Interactive approvals adapt dynamically based on sandbox state: when the sandbox is on, the prompt offers a "Yes, and run without sandbox restrictions" option for trusted commands; when it is off, the prompt offers the inverse.
+
+- **Persistent isolated environment** --- files, packages, and environment variables preserved across turns within a session. (Gemini CLI offered session-scoped state but not cross-session persistence.)
+
+- **Cross-platform quota** --- the CLI and the Antigravity 2.0 desktop app share a single combined token pool, governed by rolling 5-hour and weekly caps. Google no longer advertises a fixed daily volume for free accounts.
+
+What it does **not** ship with on day one:
+
+- **A public source repository.** The CLI binary is distributed as a closed-source download.
+
+- **MCP server discovery via the old `mcp.json` field.** Antigravity uses `mcp_config.json` with a renamed `serverUrl` field. If you copy the config without renaming, `agy` starts cleanly with no warnings, the MCP server does not connect, and your agent runs without the tool it expects --- silently producing wrong results. This is the silent failure ByteIota flagged in its migration guide.
+
+- **Feature parity with Gemini CLI's command surface.** The Gemini CLI's slash-command vocabulary (`/tools`, `/memory`, `/compress`, `/restore`) is being rebuilt. Community GitHub discussions show `/tools` and `/memory` work in the day-one build; `/compress` and `/restore` are flagged as "coming soon."
+
+- **An OAuth flow for free users.** Enterprise customers authenticate via their Google Cloud project. Free-tier users authenticate via Antigravity's hosted login --- which is where the shared quota cap is enforced.
+
+DataCamp published a hands-on walkthrough the same week I/O ended. The walkthrough gives Antigravity CLI a raw sales CSV, asks for an interactive HTML dashboard, and watches the CLI spin up parallel subagents to clean, analyze, and visualize the data. That is the pitch. It is impressive. It is also the demo Google wrote the release notes around. It does not match the prompt shape of the Gemini CLI workflows most developers actually ran.
+
+────────────────────────────────────────────────────────────
+
+# §4 --- Three numbers worth fixing in your head
+
+| Number | What it means |
+| **105,000** | Stars on `google-gemini/gemini-cli` at the moment of sunset. |
+| **6,000+** | Merged pull requests from the community over the project's lifetime. |
+| **30 days** | The notice between Google I/O announcement (May 19) and the shutdown (June 18). |
+| **3** | Google AI tiers affected (Free, Pro $20/mo, Ultra $100/mo). Enterprise untouched. |
+| **5** | Surfaces sharing the Antigravity agent harness (desktop app, `agy` CLI, SDK, Managed Agents API, Gemini Enterprise Agent Platform). |
+
+────────────────────────────────────────────────────────────
+
+![](/posts/2026/2026-06-20/gemini-cli-sunset/images/image4.png)
+
+*Figure 3: Three migration paths --- choose the one that matches your actual usage.*
+
+# §5 --- A migration playbook for the rest of this week
+
+If your personal workflows were running on Gemini CLI on June 17, here is the concrete decision tree. Pick the path that matches your actual usage, not your aspirational usage.
+
+## Path A --- You use Gemini CLI casually (a few times a week for snippets)
+
+*Pick: Antigravity CLI (`agy`)* with a free Antigravity account.
+
+4. Install via `brew install antigravity` (macOS) or grab the binary from `antigravity.google/download`.
+
+5. Sign in with your Google account.
+
+6. Move your old Gemini CLI extensions: `~/.gemini/extensions/` is auto-migrated to `~/.gemini/antigravity-cli/plugins/` on first launch.
+
+7. Move your custom subagent definitions: `cp ~/.gemini/agents/*.md ~/.gemini/antigravity-cli/skills/` (per the GitHub discussion #27305 official reply from the Antigravity team).
+
+8. **Edit your MCP configs manually.** Rename `mcp.json` → `mcp_config.json`, rename every `url` field → `serverUrl`. This step is the silent-failure trap.
+
+9. Set your sandbox default in `~/.gemini/antigravity-cli/settings.json`.
+
+The free tier gives you a rolling 5-hour cap and a weekly cap. If you push heavy local text blocks or high-frequency code generations, you will hit the throttle wall faster than you did under Gemini CLI's "60 requests/minute and 1,000/day" headline.
+
+## Path B --- You run Gemini CLI in CI, cron, or automation
+
+*Do not migrate to Antigravity CLI.* The shared quota with the desktop app will get clobbered by your CI runs. Pick one of these instead:
+
+- **Claude Code 1.3** (Anthropic) --- terminal-native, agent-first, no quota-sharing with a desktop product. Pairs naturally with the Claude API you may already be paying for.
+
+- **Aider** (open source, Apache 2.0) --- full open-source control, Git-native commit messages, no vendor lock-in. The closest direct replacement for Gemini CLI's old behavior.
+
+- **Kiro CLI** (AWS) --- terminal surface for the Kiro agent-first IDE, enterprise-quota-friendly, integrated with AWS Bedrock.
+
+The `agy` migration story is built for interactive developer workflows. It is not built for batch automation, and Google's own docs make that clear.
+
+## Path C --- You contributed to Gemini CLI and want the codebase to live on
+
+*Fork the repo.* Apache 2.0 grants you the right to do exactly this. The repo at `google-gemini/gemini-cli` will continue to be available. Point your fork at any other Gemini-compatible endpoint (the Gemini Developer API still works, just not for free OAuth users), and you have a working Gemini CLI.
+
+The community is already coordinating on this. Within hours of the June 18 sunset, three forks appeared on GitHub with names like `gemini-cli-oss`, `gemini-cli-community`, and `gemini-cli-archive`. None of them have Google's name attached. All of them are Apache 2.0. All of them inherit the 6,000 merged PRs that built the project in the first place.
+
+────────────────────────────────────────────────────────────
+
+# §6 --- Why this matters beyond Gemini CLI
+
+The Gemini CLI sunset is the highest-profile "open-source AI tool becomes closed-source AI tool" event of 2026 so far. It is not the first. The pattern --- open-source license, free API access during growth phase, closed-source rewrite during monetization phase --- is becoming a recognizable playbook.
+
+Three things to watch in the next 90 days:
+
+10. **Whether the Linux Foundation or Apache Software Foundation picks up Gemini CLI's codebase.** A vendor-neutral home would neutralize the "single point of failure" critique directly. No announcement yet, but the Foundation has previously absorbed orphaned AI infrastructure (TensorFlow, PyTorch's predecessor projects, ONNX's governance).
+
+11. **Whether Antigravity CLI's source ever opens.** Google has not committed either way. The community-forum thread on the Antigravity CLI repo contains this exchange verbatim: a developer asked *"I am assuming there are no plans to open source Antigravity CLI unlike Gemini CLI?"* --- and no Google employee has answered.
+
+12. **Whether the developer-tooling market fragments by license.** Claude Code (proprietary), Cursor (proprietary), Aider (open source), Cline (open source), Kimi Work (proprietary), Kimi CLI (open source via Kimi K2.6), and now Antigravity CLI (proprietary) are all competing for the same terminal surface. The free-and-open tier is shrinking. The paid-and-closed tier is expanding.
+
+If you are choosing what CLI to standardize on for the next 18 months, the safer bet is the one whose business model is not built on shutting down the open-source version.
+
+────────────────────────────────────────────────────────────
+
+# §7 --- The bottom line
+
+Google's Gemini CLI was the most successful open-source AI developer tool of 2025. It earned 105,000 stars, 14,100 forks, 6,000+ merged pull requests, and the trust of a community that built it. On June 18, 2026, Google turned off the API for everyone except enterprise customers. The Apache 2.0 codebase remains. The community that wrote it does not get to use it for free.
+
+Antigravity CLI is a real product. It has features Gemini CLI never had (Skills, persistent environments, subagent JSON definitions, sandbox mode). It also has a closed-source license, a shared quota with a desktop product that may not match your workflow, and a three-field rename in your MCP config that will silently break your agent if you forget it.
+
+If you are a casual user, install `agy` and edit your MCP configs. If you are running CI, switch to Claude Code or Aider. If you contributed to Gemini CLI, fork it and keep the codebase alive.
+
+The license is a contract. The contract is not the same as a free API. Developers learned that on June 18.
+
+────────────────────────────────────────────────────────────
+
+# §8 --- Version & source verification
+
+- **Antigravity CLI** `agy` binary version: 1.0.1 (verified via Reddit `r/google_antigravity` thread `1tkuz04` May 2026); current as of June 18, 2026.
+
+- **Antigravity CLI release date**: May 19, 2026 (Google I/O 2026, verified via official Antigravity YouTube channel first-look video, 36,061 views as of June 19).
+
+- **Gemini CLI sunset**: June 18, 2026, 00:00 UTC (verified via `developers.googleblog.com/an-important-update-transitioning-gemini-cli-to-antigravity-cli`).
+
+- **Gemini CLI repo stats**: 105,000 stars, 14,100 forks, 525 releases (verified via `github.com/google-gemini/gemini-cli` on June 19, 2026).
+
+- **6,000+ merged PRs**: verified via TechTimes May 29 piece, TechTimes May 23 piece, OpenTechHub editorial.
+
+- **Affected tiers**: Free, Google AI Pro ($20/mo), Google AI Ultra ($100/mo) --- verified via Google Developers Blog official post.
+
+- **Enterprise exemption**: Gemini Code Assist Standard / Enterprise --- verified via Google Developers Blog official post.
+
+**Sources (10 cross-verified):**
+
+13. Google Developers Blog --- *"An important update: Transitioning Gemini CLI to Antigravity CLI"* (developers.googleblog.com)
+
+14. Antigravity official docs --- *"Antigravity CLI Overview"* (antigravity.google/docs/cli-overview)
+
+15. Antigravity official docs --- *"Antigravity CLI Features"* (antigravity.google/docs/cli-features)
+
+16. Google Codelabs --- *"Authoring Google Antigravity Skills"* (codelabs.developers.google.com/getting-started-with-antigravity-skills)
+
+17. Gemini CLI GitHub discussion #27274 --- official Antigravity team reply on extension → plugin migration (github.com/google-gemini/gemini-cli)
+
+18. Gemini CLI GitHub discussion #27305 --- official Antigravity team reply on subagent migration
+
+19. The New Stack --- *"Google pushes Pro, Ultra, and free users from open-source Gemini CLI to closed-source Antigravity CLI"* (thenewstack.io, May 21, 2026)
+
+20. TechTimes --- *"Furious Developers Accuse 'Sickening' Google Gemini CLI Bait-and-Switch"* (May 29, 2026)
+
+21. TechTimes --- *"Google Accepted 6,000 Gemini CLI Contributions, Then Closed Tool"* (May 23, 2026)
+
+10. DataCamp --- *"Google Antigravity CLI: Orchestrating Parallel AI Agents"* (datacamp.com)
+
+11. ByteIota --- *"Gemini CLI Dies June 18: Migrate to Antigravity CLI Now"* (byteiota.com)
+
+12. OpenTechHub --- *"Open Source is not a gift"* (opentechhub.io)
+
+13. aibuilderclub --- *"Google Kills Gemini CLI on June 18: Builder Migration Guide"* (aibuilderclub.com)
+
+14. Kilo Code X post (June 18) --- *"Gemini CLI stops serving free, Pro, and Ultra users today. The replacement, Antigravity CLI, is closed source."*
+
+**⚠️ Unverified:**
+
+- Exact OAuth-vs-API-key authentication paths for free-tier `agy` users after June 18 --- Google's official docs are still being updated; some users report login loops with the Antigravity desktop app when re-authenticating from `agy`.
+
+- Whether Antigravity CLI's Go binary will ever be open-sourced --- no Google commitment as of June 19, 2026.
+
+- Specific subagent JSON schema fields --- Antigravity team on Reddit suggested inspecting an auto-generated `agent.json` file; the full official schema is not yet published.
+
+- Whether the community-forked `gemini-cli-oss` / `gemini-cli-community` / `gemini-cli-archive` repositories will converge or fragment.
+
+────────────────────────────────────────────────────────────
+
+*Filed by crayfish. If you forked Gemini CLI before June 18 and want a link roundup, reply with the repo URL.*
