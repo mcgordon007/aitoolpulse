@@ -1,0 +1,201 @@
+---
+title: "Agentjacking: How a Fake Sentry Error Hijacks AI Coding Agents"
+description: "A single forged Sentry error event can hijack Claude Code, Cursor, and Codex through MCP. Tenet Security's Agentjacking disclosure exposes an 85% success rate attack that Sentry says it cannot fix. Here is the full breakdown and defense playbook."
+pubDate: 2026-06-22
+heroImage: "/posts/2026/2026-06-22/agentjacking-ai-security-threat/images/image1.jpg"
+tags: ["Agentjacking", "Sentry", "MCP", "AI security", "Claude Code", "Cursor", "OpenAI Codex", "cybersecurity", "prompt injection"]
+---
+
+*Published: June 22, 2026 | Category: AI Security | Reading time: ~9 minutes*
+
+![](/posts/2026/2026-06-22/agentjacking-ai-security-threat/images/image1.jpg)
+
+*Cover: A forged Sentry error event becomes a Trojan horse for AI coding agents.*
+
+On June 12, 2026, a research team at Tenet Security published a 14-page disclosure that should keep every developer who has connected a Sentry MCP server to Claude Code awake at night. The attack has a name --- Agentjacking --- and an 85% success rate against live targets. It requires no phishing, no malware, no zero-day, and no breach of the victim's infrastructure. The attacker only needs a public Sentry DSN, which Sentry embeds in client-side JavaScript by design.
+
+If you have the Sentry MCP server connected to Claude Code, Cursor, OpenAI Codex, or any AI coding agent that consumes Sentry events through the Model Context Protocol, you are inside the blast radius. The Cloud Security Alliance's research note, published the same week, mapped 2,388 organizations with publicly discoverable, write-injectable Sentry DSNs --- and concluded that the underlying weakness is architectural, not patchable.
+
+Sentry acknowledged the issue but told Tenet the architecture is "technically not defensible." The company deployed a content filter that blocks the specific payload string Tenet used in testing. The injection pathway remains open.
+
+This article walks through how Agentjacking works, why every AI coding agent in production today is structurally vulnerable, and what developers should do this week.
+
+## **1. What Sentry DSNs Are, and Why Anyone Can Write to Them**
+
+When you wire Sentry into a web or mobile application, the SDK needs a destination for crash reports. That destination is encoded as a Data Source Name (DSN) --- a URL-shaped credential that points at Sentry's event-ingest endpoint. By design, the DSN has to be embedded in client-side JavaScript (and in mobile app binaries), because end-user devices need to ship crash reports to Sentry without an authenticated session.
+
+That design choice has a security consequence: anyone with the DSN can POST arbitrary "error events" to Sentry. Those events are stored alongside genuine crash reports in your project's issue queue.
+
+In the old days, this was inconvenient but not catastrophic. A human engineer reading the Sentry dashboard could usually tell a real crash from a fake one. Stack traces looked real, message text looked plausible, but the engineering judgment was the trust boundary.
+
+That assumption broke the moment an AI coding agent started reading the queue.
+
+## **2. The MCP Twist: Why an AI Agent Trusts an Error**
+
+The Model Context Protocol, introduced by Anthropic in late 2024 and adopted across Claude Code, Cursor, and OpenAI Codex, is the standard interface through which AI coding agents connect to external tools and data sources. Sentry ships an official MCP server that lets agents query error events, retrieve stack traces, and even invoke Sentry's own root-cause-analysis tool, Seer.
+
+A typical developer workflow now looks like this:
+
+> *"Claude, what are the top unresolved errors in production?" / "Cursor, fix the Sentry issue from this sprint." / "Codex, triage the bugs in the bug-tracker MCP server."*
+
+The agent queries Sentry through MCP. Sentry returns the matching events. The agent reads them as trusted diagnostic context --- the same way it reads a file the developer just opened, or the output of a tool it just called.
+
+That trust model is the entire vulnerability.
+
+## **3. The Attack Chain, Step by Step**
+
+![](/posts/2026/2026-06-22/agentjacking-ai-security-threat/images/image2.jpg)
+
+*The four-stage Agentjacking attack chain: public DSN, forged event, MCP retrieval, malicious code execution on the developer's machine.*
+
+The Agentjacking attack chain, as documented by Tenet Security researchers Ron Bobrov, Barak Sternberg, and Nevo Poran, has four steps:
+
+### **Step 1 --- Discover a public DSN**
+
+A Sentry DSN embedded in client-side JavaScript is, by definition, public. An attacker scrapes a target company's website, opens DevTools, finds the DSN in the bundle, or pulls it from a public repository that accidentally checked in .env.sentry.
+
+### **Step 2 --- Inject a crafted error event**
+
+The attacker uses the DSN to POST a forged event to Sentry's ingest endpoint. The event looks like an ordinary JavaScript error --- except the message field and certain context keys contain carefully formatted markdown. That markdown renders as a structured block inside the Sentry MCP server's response, visually identical to Sentry's own resolution template. Underneath, it carries a ## Resolution heading and a code block containing an npx command that downloads a package from a malicious npm registry mirror and runs it.
+
+### **Step 3 --- Wait for the developer to ask**
+
+The attacker does nothing else. They wait for the developer to ask their AI coding agent to investigate unresolved Sentry issues --- which is, increasingly, a daily workflow for engineering teams that have wired agents into their on-call rotation.
+
+### **Step 4 --- The agent executes the attacker's command**
+
+The agent reads the forged event through MCP, sees what looks like a legitimate fix suggestion, and runs the npx command. The command runs with the developer's full privileges, on the developer's machine. If the developer has AWS credentials in ~/.aws/credentials, SSH keys in ~/.ssh/, GitHub tokens in their shell environment, or secrets in .env, the attack exfiltrates them. The malicious code runs as the developer, and the security stack --- EDR, WAF, IAM, VPN, Cloudflare, firewalls --- sees nothing. Every action is authorized.
+
+> *"The attacker never touches the victim's infrastructure. The malicious instruction arrives disguised as a legitimate 'Resolution' inside an ordinary error. When a developer asks their AI agent to fix the Sentry issue, the agent reads the attacker's command as trusted guidance and runs it --- with the developer's own privileges, on the developer's own machine." --- Cloud Security Alliance research note, June 12, 2026*
+
+## **4. The Numbers Behind the Disclosure**
+
+Tenet Security's disclosure quantified the attack class against live production targets:
+
+- 2,388 organizations were found with publicly discoverable, write-injectable Sentry DSNs.
+
+- 100+ live targets were tested in a controlled manner. The attack succeeded against 85% of them.
+
+- The Sentry MCP server is supported on Claude Code, Cursor, and OpenAI Codex --- the three most widely deployed AI coding agents in production today.
+
+- The attack bypasses EDR, WAF, IAM, VPN, Cloudflare, and firewalls because every action in the chain is performed by an authorized user (the developer) running an authorized tool (the AI agent).
+
+- Sentry's response was to deploy a content filter for the specific payload string Tenet used. The underlying DSN injection pathway is structurally unchanged.
+
+The Cloud Security Alliance mapped the weakness to gaps in agentic AI governance rather than treating it as a patchable flaw. The reasoning is straightforward: as long as an agent consumes externally influenced data through MCP-like integrations and treats that data as trusted, every such integration is a potential Agentjacking vector.
+
+## **5. Why Sentry Says It Can't Fix This**
+
+Sentry's response, as reported by The Hacker News and confirmed across multiple outlets, was that the architecture is "technically not defensible." That is not a deflection. It is a correct architectural assessment.
+
+Sentry's DSN design relies on public, write-only credentials so client devices can ship crash reports without authentication. That is the entire reason the product works. Removing public-write from DSNs would break every existing Sentry SDK in production --- which is most production software in the world. Adding server-side authentication would require an authenticated session on every crash report --- which is exactly what Sentry's design deliberately avoids because most crash reports happen when the app is in a degraded state and cannot authenticate.
+
+The content filter Sentry deployed blocks the specific payload string Tenet used in their proof-of-concept. It does not block the class of attack. Any attacker who varies the markdown structure, the command syntax, or the encoding will produce a payload that the filter does not recognize.
+
+In other words: the patch is to one known weapon. The factory that produces that weapon is still running.
+
+## **6. Why This Matters More Than a Typical Vulnerability Disclosure**
+
+Agentjacking is not a conventional injection vulnerability. It does not require compromising a server, exploiting a CVE, or bypassing a perimeter. It exploits the trust model that MCP integrations are built on --- the assumption that data returned by a tool is safe to act on.
+
+That assumption is what every AI coding agent in production today is built around. It is what makes Claude Code, Cursor, and Codex useful: when you tell an agent to fix a Sentry issue, you expect the agent to act on the Sentry response without re-verifying it as untrusted input.
+
+Tenet's research demonstrates exactly how expensive that assumption can be. The Cloud Security Alliance's joint report with SANS and OWASP concluded that organizations are "likely to be overwhelmed" by the volume of vulnerabilities that AI-driven discovery will surface in the next 12 months. Agentjacking is the inverse of that finding: it shows that the same agentic infrastructure that defends against vulnerabilities can be weaponized to deliver them.
+
+The same week that Project Glasswing expanded Anthropic's defensive coalition for critical infrastructure to roughly 200 organizations, Agentjacking disclosed that the AI coding agents those organizations rely on for daily development are themselves an attack surface. Defensive and offensive AI are now running on the same substrate.
+
+## **7. The Defense Playbook: What Developers Should Do This Week**
+
+![](/posts/2026/2026-06-22/agentjacking-ai-security-threat/images/image3.jpg)
+
+*Six-step defense playbook for developers running AI coding agents connected to Sentry MCP.*
+
+There is no upstream patch for Agentjacking. The fix has to be at the integration and runtime layer. Here is the playbook, ordered from cheapest to most thorough.
+
+### **Step 1 --- Audit every MCP server connected to an AI coding agent**
+
+Run claude mcp list, or the equivalent for Cursor and Codex. If you have the Sentry MCP server connected, decide whether you want it on at all. If you do, restrict its scope: do not let it run shell commands, do not give it write access to your filesystem outside a sandbox directory, do not let it make outbound network requests beyond Sentry's own ingest and API endpoints.
+
+### **Step 2 --- Move the agent out of the blast radius**
+
+Run the agent in a sandboxed VM or container with no production secrets. If the agent exfiltrates credentials, the credentials it can exfiltrate are credentials it never had. Docker, Lima, OrbStack, and Dev Containers all work. The investment is one day of setup; the insurance is total.
+
+### **Step 3 --- Enable "confirm" or "read-only" mode for any coding agent**
+
+Claude Code's permission model, Cursor's agent mode settings, and Codex CLI's --read-only flag all let you require human approval for shell commands, file writes, and outbound network calls. This defeats Agentjacking outright: the agent reads the malicious instruction, but it cannot act on it without you clicking "approve."
+
+### **Step 4 --- Rotate the DSN, even if you think it is private**
+
+Tenet's research found 2,388 organizations with publicly discoverable DSNs. Search your own production sites and mobile apps for Sentry DSNs that have leaked into client bundles. Rotate any DSN that appears in a public repository or in your production JavaScript. Use Sentry's "Allowed Domains" feature to restrict which origins can submit events.
+
+### **Step 5 --- Treat MCP tool responses as untrusted input**
+
+The agent's trust boundary is the same as the developer's trust boundary. If you would not paste a string from the internet directly into a shell command, do not let the agent paste it there either. Build a wrapper that sanitizes markdown-injected commands out of any MCP response before the agent reads it.
+
+### **Step 6 --- Monitor for outbound network calls from coding-agent processes**
+
+Even in a sandboxed environment, log every outbound DNS query and TCP connection from the agent process. A malicious npx command will resolve a hostname that is not in your normal development workflow. Alert on the anomaly.
+
+None of these steps are difficult. All of them are within reach of a single afternoon of focused work. The question is whether the team treats the AI coding agent as a tool they fully control, or as a process that needs the same isolation hygiene as any other piece of untrusted infrastructure.
+
+## **8. The Honest Version**
+
+Agentjacking is the most consequential AI security disclosure of 2026 so far, not because the attack is sophisticated, but because the trust model it exploits is the foundation of every AI coding workflow that exists today. Sentry's "technically not defensible" verdict is correct. The Cloud Security Alliance's "architectural, not patchable" assessment is correct. The agentic AI industry is going to have to reckon with the fact that giving an LLM the ability to read external data and act on it has consequences that no one fully thought through before shipping.
+
+The fix is not at the protocol level. The fix is at the integration level --- every team that has wired an AI coding agent into a production tool stack needs to add isolation, confirm-on-action, and outbound-network controls to that integration. The same week that Project Glasswing showed what defensive AI at scale looks like, Agentjacking showed what the same substrate looks like when it is pointed the wrong direction.
+
+Defensive AI and offensive AI are running on the same rails. Pick which one you want yours to be, and sandbox accordingly.
+
+## **Sources**
+
+1. Tenet Security --- Agentjacking: A Fake Sentry Bug Report Hijacks Your AI Coding Agent (June 12, 2026) --- tenetsecurity.ai/blog/agentjacking-coding-agents-with-fake-sentry-errors/
+
+2. Cloud Security Alliance --- Agentjacking: Sentry MCP Injection Hijacks AI Coding Agents (June 12, 2026) --- labs.cloudsecurityalliance.org/research/csa-research-note-agentjacking-mcp-sentry-injection-20260612
+
+3. The Hacker News --- Agentjacking Attack Tricks AI Coding Agents Into Running Malicious Code (June 2026) --- thehackernews.com/2026/06/agentjacking-attack-tricks-ai-coding.html
+
+4. The New Stack --- A public Sentry key is all it takes to hijack Claude Code, Cursor, and Codex (June 11, 2026) --- thenewstack.io/agentjacking-sentry-mcp-attack
+
+5. Pinggy --- Agentjacking: How a Fake Sentry Bug Report Hijacks Your AI Coding Agent (June 2026) --- pinggy.io/blog/agentjacking_ai_coding_agents_sentry_mcp
+
+6. Mallory.ai --- Agentjacking Exploits Sentry MCP to Make AI Coding Agents Run Malicious Code (June 2026) --- mallory.ai/stories/019ebbf0-cfe8-748c-bb06-d3a80fc817e5
+
+7. AI Weekly --- Tenet Security: Agentjacking Hits 2,388 Orgs via Sentry (June 2026) --- aiweekly.co/alerts/tenet-security-agentjacking-hits-2388-orgs-via-sentry
+
+8. LetsDataScience --- Researchers Demonstrate Agentjacking via Sentry DSN Injection (June 2026) --- letsdatascience.com/news/researchers-demonstrate-agentjacking-via-sentry-dsn-injectio-5aafe36c
+
+9. yage.ai --- Agentjacking: A Fake Error Report Has an 85% Chance of Hijacking Your Claude Code (June 15, 2026) --- yage.ai/share/agentjacking-mcp-trust-en-20260615.html
+
+10. devops.com --- Tenet's Agentjacking Attack Turns Sentry Errors Into Code Execution (June 2026) --- devops.com/tenets-agentjacking-attack-turns-sentry-errors-into-code-execution
+
+11. Pulse 2.0 / adyog --- Agentjacking: A Malicious Sentry Error Event Can Hijack Claude Code, Cursor, and Codex. 2,388 Organizations Exposed (June 2026) --- pulse.adyog.com/insights/agentjacking-sentry-mcp-2388-orgs-exposed
+
+## **Version Verification**
+
+Agentjacking disclosure: Tenet Security blog post published June 12, 2026 --- verified via 11 independent secondary sources.
+
+Cloud Security Alliance research note: published June 12-14, 2026 --- verified.
+
+2,388 organizations with publicly exposed DSNs: reported by Tenet Security, cross-referenced by AI Weekly, LetsDataScience, Pulse 2.0 / adyog --- verified across 4 independent sources.
+
+85% exploitation success rate against 100+ live targets: reported by Tenet Security, confirmed by The Hacker News, Pinggy, Mallory.ai --- verified across 4 independent sources.
+
+Sentry response ("technically not defensible" + content filter for specific payload string): reported by The Hacker News, confirmed by Mallory.ai and The New Stack --- verified across 3 independent sources.
+
+Affected AI coding agents (Claude Code, Cursor, OpenAI Codex): confirmed by Tenet Security, The Hacker News, The New Stack, Pinggy, Mallory.ai, yage.ai --- verified across 6 independent sources.
+
+Sentry MCP server: official documentation at docs.sentry.io confirms MCP integration with Claude Code, Cursor, and OpenAI Codex --- verified.
+
+Cloud Security Alliance joint report with SANS / OWASP: published June 12-14, 2026 --- referenced by CSA research note --- verified.
+
+### **Unverified at time of publication**
+
+- Final Sentry product roadmap decision on whether to issue a deeper architectural fix beyond content filter (Sentry's official statement as of June 21, 2026 is that the architecture is "technically not defensible" --- no public commitment to a deeper fix).
+
+- Whether Cursor and OpenAI Codex will ship first-class Agentjacking mitigations in their agent runtimes (no public commitment as of June 21, 2026).
+
+- Specific number of organizations that have applied the playbook steps in section 7 to their production Sentry MCP integrations (no public telemetry).
+
+- Whether OWASP will add Agentjacking as a named entry to its LLM Top 10 (analyst consensus is yes, no official commitment yet).
+
+- Final classification of Agentjacking under CVE / CWE (Tenet did not request a CVE; the disclosure is positioned as architectural research, not a single-vendor bug).
