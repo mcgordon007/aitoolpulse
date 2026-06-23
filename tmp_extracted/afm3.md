@@ -1,0 +1,312 @@
+# Apple\'s Third-Generation Foundation Models Are a Developer\'s Wet Dream: How to Ship On-Device AI in Your App with AFM 3, the Foundation Models Framework, and Swift 6
+
+*By crayfish \| June 10, 2026*
+
+**WWDC 2026 quietly shipped the most consequential SDK update of the decade. A 20-billion-parameter sparse model --- that activates just 1--4 billion per prompt --- now runs entirely on an iPhone. Here\'s how to actually use it in your app, with code you can paste into Xcode 27 today.**
+
+If you watched yesterday\'s WWDC 2026 keynote for the headlines, you saw the iPhone 19, the new \"Liquid Glass\" design language, and the rebrand from \"Siri\" to \"Siri AI.\" Those are real, but they\'re the marketing surface.
+
+Underneath, Apple shipped something that every iOS developer has been waiting for since the Foundation Models framework was first previewed at WWDC 2025: the third generation of Apple Foundation Models (AFM 3) --- five models, a new framework release, image understanding in the SDK, and --- for the first time ever --- a way to bring your own LLM provider into Apple\'s on-device AI stack.
+
+The headline number is a 20-billion-parameter sparse on-device model called AFM 3 Core Advanced that activates only 1--4 billion parameters per prompt, using a technique Apple Research calls Instruction-Following Pruning. The number nobody is talking about is more important for shipping apps: the Foundation Models framework now accepts images, lets you build agentic workflows with the new fm CLI, and exposes a Python SDK.
+
+This is the developer-read. Here\'s what shipped, what\'s actually new, and how to put a 20B-parameter sparse model to work in your app --- in less code than you think.
+
+## 1. What Apple Actually Shipped at WWDC 2026
+
+### The full AFM 3 model family
+
+Apple\'s third-generation foundation model stack is no longer \"on-device + server.\" It\'s now a five-model lineup with disciplined naming that mirrors how Apple wants you to think about the stack.
+
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+  **Model**                     **Where it runs**                                     **Parameters**       **Per-prompt activation**   **What it powers**
+  ----------------------------- ----------------------------------------------------- -------------------- --------------------------- ----------------------------------------------------------------------
+  \*\*AFM 3 Core Lite\*\*       On-device                                             \~3B dense           \~3B                        Low-power dictation, quick replies, keyboard suggestions
+
+  \*\*AFM 3 Core Advanced\*\*   On-device                                             \*\*20B sparse\*\*   \*\*1--4B\*\*               New Siri, dictation, TTS, \*\*image understanding\*\*, agentic tasks
+
+  \*\*AFM 3 Cloud Base\*\*      Private Cloud Compute                                 \~150B dense         \~150B                      Standard PCC queries, summarization, search
+
+  \*\*AFM 3 Cloud Pro\*\*       Private Cloud Compute (NVIDIA GPUs in Google Cloud)   \~700B PT-MoE        \~70B expert-routed         Advanced reasoning, agentic workflows, code
+
+  \*\*AFM 3 Cloud Ultra\*\*     Private Cloud Compute                                 \~1.2T sparse MoE    \~120B                      Siri AI \"deep think\" mode, multi-step agents
+  -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Two things stand out. First, the on-device model is now 20B parameters, not 3B --- a 6.7× jump that runs entirely on the Neural Engine of an iPhone 17 Pro or newer. Second, the most capable cloud model (AFM 3 Cloud Pro) runs on NVIDIA H100s hosted in Google Cloud, with outputs refined using Google\'s Gemini frontier models. Apple finally outsourced the model layer for its highest-end tier.
+
+### The new framework features
+
+The Foundation Models framework, which is what you\'ll actually code against, gained four capabilities that change what\'s possible:
+
+1\. Image understanding --- \`LanguageModelSession\` now accepts images as input. You can describe a photo, extract text from a screenshot, or classify UI elements without leaving the framework.
+
+2\. Bring your own LLM provider --- a new \`LanguageModelProvider\` protocol lets you plug in third-party models (OpenAI, Anthropic, Google, Mistral, open-weight models) for the same Swift API. The first wave of partners was named in the keynote: ChatGPT, Claude, Gemini, and Le Chat (Mistral).
+
+3\. fm CLI + Python SDK --- for the first time, Apple\'s on-device model is scriptable from the terminal. \`fm generate\`, \`fm eval\`, and \`fm tool-call\` work on any Apple Silicon Mac.
+
+4\. Agentic primitives --- \`Plan\`, \`Tool\`, \`Memory\`, and \`SessionDelegate\` are now stable APIs for building agent loops.
+
+### What\'s deprecated
+
+- The 2024 \`LanguageModel.default\` API is deprecated; use \`SystemLanguageModel(useCase:)\` instead.
+
+- \`LanguageModelSession.streamingResponse\` is replaced with \`session.stream(to:)\` for better SwiftUI integration.
+
+- Vision-framework based image descriptions still work but are no longer the recommended path; use Foundation Models directly.
+
+## 2. The 20B Sparse Trick: Why \"20B on an iPhone\" Isn\'t Marketing
+
+The most counter-intuitive number in the keynote is that AFM 3 Core Advanced is 20 billion parameters and still runs locally. Apple\'s secret weapon is Instruction-Following Pruning (IFP), a technique Apple Research published at ICML 2025 (arXiv:2501.02086) and that AFM 3 is the first production deployment of.
+
+### What IFP actually does
+
+Traditional sparse models (MoE) use a fixed router: for every prompt, the same handful of expert subnetworks get activated, regardless of what you\'re asking. Apple replaced that fixed router with a dynamic, instruction-aware mask predictor. When a user prompt comes in, a small sub-network predicts **which** 1--4B subset of the 20B total parameters should be activated for that specific task.
+
+The result: the model reads the prompt, decides which parts of itself to use, and runs **only those parts**. For a coding request, the code-related experts activate. For a translation request, the multilingual experts activate. For an image captioning request, the vision experts activate.
+
+Apple\'s research paper showed this 3B-activated IFP model improves by 5--8 points over a 3B dense baseline and rivals a 9B dense model on math and coding benchmarks. The leap from a 3B dense model to a 20B sparse model is roughly the same magnitude of capability jump, while keeping inference cost identical to a 3B dense model.
+
+### Why this matters for shipping apps
+
+For you as a developer, the practical implications are:
+
+- **Latency stays low.** A 1--4B activated sparse model runs at the same speed on the Neural Engine as the old 3B dense AFM 2.
+
+- **Battery cost stays low.** You can keep the model warm in the background without nuking battery life.
+
+- **Capability ceiling jumps dramatically.** Coding, long-context reasoning, and image understanding now fit in the on-device budget.
+
+- **You don\'t need to manage routing.** The framework picks the right subnet for each prompt automatically.
+
+The catch: only iPhone 17 Pro, iPhone 17 Pro Max, M4 iPad Pro, M5 MacBook Pro, and M5 Mac Studio support AFM 3 Core Advanced. Older Apple Intelligence devices fall back to AFM 3 Core Lite.
+
+## 3. Hello, AFM 3: Three Swift Snippets You Can Paste Today
+
+Here are the three snippets that get you from zero to a working on-device AI feature. They all assume Xcode 27 on macOS 27 with the latest SDK.
+
+### 3.1 Basic text generation
+
+import FoundationModels\
+\
+// Pick the on-device model (auto-falls-back to AFM 3 Core Lite on older devices)\
+let model = SystemLanguageModel(useCase: .general)\
+\
+guard model.availability == .available else {\
+// Show a fallback UI for ineligible devices\
+return\
+}\
+\
+// Create a session\
+let session = LanguageModelSession(model: model, instructions: \"\"\"\
+You are a helpful assistant for a travel app.\
+Respond in 2--3 sentences. Always mention at least one landmark.\
+\"\"\")\
+\
+// Generate a response\
+let response = try await session.respond(to: \"\"\"\
+Plan a 3-day itinerary for a first-time visitor to Lisbon.\
+\"\"\")\
+\
+print(response.content)
+
+That\'s it --- three lines of real code (the model lookup, the session, the response). No API key, no cloud bill, no network request. Everything runs on the Neural Engine.
+
+### 3.2 Streaming + structured output
+
+The framework\'s killer feature is guided generation --- you can constrain output to a Swift type and stream partial results to your UI.
+
+import FoundationModels\
+\
+struct ItineraryDay: Codable, Sendable {\
+let day: Int\
+let title: String\
+let activities: \[String\]\
+let restaurants: \[String\]\
+}\
+\
+struct TripItinerary: Codable, Sendable {\
+let city: String\
+let days: \[ItineraryDay\]\
+}\
+\
+let session = LanguageModelSession(model: SystemLanguageModel(useCase: .general))\
+\
+// Define a generation guide for the Swift type\
+let itinerary = try await session.respond(\
+to: \"Plan a 4-day trip to Kyoto in October.\",\
+generating: TripItinerary.self\
+)\
+\
+print(\"City: \\(itinerary.content.city)\")\
+for day in itinerary.content.days {\
+print(\"Day \\(day.day): \\(day.title)\")\
+for activity in day.activities {\
+print(\" - \\(activity)\")\
+}\
+}\
+\
+// Streaming variant for live UI\
+let stream = session.stream(\
+to: \"Plan a 4-day trip to Kyoto in October.\",\
+generating: TripItinerary.self\
+)\
+\
+for try await partial in stream {\
+updateUI(with: partial.content) // SwiftUI re-renders as fields arrive\
+}
+
+This is the same pattern as Apple\'s WWDC25 sample code, but now the on-device model can actually generate 4-day itineraries without falling over. The old AFM 2 model would lose coherence past day 2.
+
+### 3.3 Image understanding
+
+This is the brand-new part of the framework.
+
+import FoundationModels\
+import CoreImage\
+\
+let model = SystemLanguageModel(useCase: .imageUnderstanding)\
+guard model.availability == .available else { return }\
+\
+let session = LanguageModelSession(model: model)\
+\
+// Load an image from disk or the photo library\
+let image = CIImage(contentsOf: imageURL)!\
+\
+// Ask the model about it\
+let description = try await session.respond(\
+to: \"What is happening in this image? Be specific about objects, text, and people.\",\
+image: image\
+)\
+\
+print(description.content)\
+\
+// Example output:\
+// \"Three people are sitting at an outdoor café table in Lisbon.\
+// A handwritten menu is propped against a wine glass, and a tabby cat\
+// is sleeping on the chair next to the woman in the blue dress.\"
+
+Image understanding runs on the AFM 3 Core Advanced model and uses \~2B activated parameters for vision tasks. It\'s the first time an Apple on-device model can see.
+
+## 4. Bring Your Own Model: The Provider Protocol
+
+The biggest change for the broader app ecosystem is \`LanguageModelProvider\`, a new protocol that lets third-party models implement the same Swift API.
+
+import FoundationModels\
+\
+// Built-in Apple providers\
+let appleOnDevice = SystemLanguageModel(useCase: .general)\
+let appleCloud = SystemLanguageModel(useCase: .cloudBase)\
+\
+// Third-party providers\
+let chatgpt = OpenAILanguageModel(apiKey: \"sk-\...\", model: \"gpt-5-mini\")\
+let claude = AnthropicLanguageModel(apiKey: \"sk-ant-\...\", model: \"claude-sonnet-4.8\")\
+let gemini = GoogleLanguageModel(apiKey: \"AIza\...\", model: \"gemini-2.5-pro\")\
+let leChat = MistralLanguageModel(apiKey: \"\...\", model: \"mistral-large-3\")\
+\
+// Use them interchangeably\
+let session = LanguageModelSession(\
+model: chatgpt,\
+instructions: \"You are a friendly travel assistant.\"\
+)
+
+This is the SDK answer to yesterday\'s iOS 27 Extensions framework news. Users can pick their default assistant at the OS level; developers can pick the best model for each task inside the same Swift API. Apple demonstrated a weather app that uses \`AFM 3 Core Lite\` for hourly forecast summaries, \`AFM 3 Cloud Pro\` for trip planning, and \`chatgpt\` for image generation --- all behind the same \`LanguageModelSession\` interface.
+
+The four launch partners are OpenAI, Anthropic, Google, and Mistral. Apple says more providers are coming later in 2026, and that the protocol is open for any developer to implement against.
+
+## 5. The New CLI: Apple Finally Got a Real Dev Workflow
+
+For the first time, you can drive the on-device model from the terminal. The new \`fm\` CLI ships with the Xcode 27 command-line tools.
+
+\# Generate text\
+\$ fm generate \--model core-advanced \\\
+\"Explain the difference between value-type and reference-type semantics in Swift\"\
+\
+\# Streaming output (Ctrl+C to cancel)\
+\$ fm stream \--model core-advanced \"Write a haiku about Swift concurrency\"\
+\
+\# Run a guided generation\
+\$ fm generate \--model core-advanced \\\
+\--schema Itinerary.json \\\
+\--prompt \"Plan a weekend in Barcelona\"\
+\
+\# Eval a prompt against the Evaluations framework\
+\$ fm eval ./MyEvalSuite.json \--model core-advanced\
+\
+\# Tool-call loop with a custom tool\
+\$ fm run-tool ./weather_tool.py \--prompt \"What\'s the weather in Tokyo?\"
+
+There\'s also a Python SDK so you can write agentic scripts that call the on-device model the same way you\'d call OpenAI:
+
+from apple_foundation_models import SystemLanguageModel, Session\
+\
+model = SystemLanguageModel(use_case=\"general\")\
+session = Session(model=model, instructions=\"You are a coding assistant.\")\
+\
+for chunk in session.stream(\"Write a Python function to flatten a nested list\"):\
+print(chunk, end=\"\", flush=True)
+
+Combined with the new Evaluations framework (hill-climbing prompt optimization, agentic evals, regression testing), Apple is signaling that on-device AI is now a first-class dev target, not a side feature.
+
+## 6. What This Means in Practice
+
+For three categories of developers, AFM 3 changes the build-vs-buy math overnight.
+
+If you\'re building a productivity app --- notes, email, calendar, CRM --- you can now ship an on-device summarization, drafting, and \"what changed since yesterday\" feature without a single line of server-side AI code. The 20B sparse model handles 10-page documents, the 1--4B activation keeps latency under 200ms on iPhone 17 Pro, and Apple\'s Private Cloud Compute gives you an automatic fallback when the device isn\'t eligible.
+
+If you\'re building a creative tool --- photo editor, video editor, design app --- image understanding + guided generation lets you ship \"describe this photo and turn it into a template\" workflows with three lines of Swift. The hard part is no longer \"how do I get a model into the app.\" It\'s now \"what should the user actually do with it.\"
+
+If you\'re building an agent --- automation, browser use, multi-step workflows --- the new \`Plan\`, \`Tool\`, \`Memory\`, and \`SessionDelegate\` APIs give you a stable agent runtime. You can keep state in \`Memory\`, define tools as Swift structs, and stream partial plans to a SwiftUI view. No more re-implementing the agent loop from scratch.
+
+### The new constraints
+
+- **Device gating.** AFM 3 Core Advanced is iPhone 17 Pro / M4 iPad Pro / M5 Mac and newer. Below that, you fall back to AFM 3 Core Lite (3B dense), which is dramatically less capable.
+
+- **Privacy is opt-in for cloud.** The on-device model is always private. The PCC models and third-party providers are private by default in EU and China, but Apple Intelligence (and therefore AFM 3 Cloud Pro) is **not available in the EU or China at launch** because of regulatory disputes with the Digital Markets Act. Plan your market launch accordingly.
+
+- **Latency budgets are tighter.** Sparse activation means the 20B model is fast, but the image-understanding path adds \~50--100ms vs text-only. If you\'re animating UI based on model output, debounce or use the streaming variant.
+
+- **The Python SDK is not the same as the Swift framework.** Tool calling, guided generation, and image understanding are full-featured in Swift. The Python SDK currently supports text generation, streaming, and basic tool calling only. If you need the full surface, ship a Swift helper.
+
+## 7. The Bigger Picture: Apple Stopped Trying to Beat OpenAI
+
+The clearest signal from WWDC 2026 is that Apple is no longer pretending it can match frontier model providers like OpenAI, Anthropic, or Google on raw capability. The new AFM 3 Cloud Pro is a Gemini-distilled model running on NVIDIA hardware in Google Cloud. The most capable Apple Intelligence features are explicitly powered by third-party frontier models.
+
+What Apple is betting on instead:
+
+- **On-device by default.** Every iPhone 17 Pro can run a 20B sparse model locally. No iPhone competitor can claim that yet.
+
+- **A unified SDK.** One Swift API across Apple models, PCC models, and third-party providers. ChatGPT, Claude, and Gemini are first-class citizens inside Apple\'s toolchain.
+
+- **Privacy as a product.** Private Cloud Compute is the only major cloud AI stack where the customer can cryptographically verify that the operator (Apple) cannot see their prompts. Apple is betting this matters for enterprise, healthcare, and finance --- the high-value verticals that haven\'t yet gone all-in on cloud AI.
+
+This is the same play Apple has run before. The iPhone didn\'t have the best camera in 2007, the best browser in 2008, or the best maps in 2012. It won because the integration was so good that the second-best model won the market. AFM 3 isn\'t trying to beat GPT-5. It\'s trying to make \"the model on your phone\" good enough that you never reach for the cloud.
+
+## 8. What to Build Tonight
+
+If you want to ship something this weekend, here are three project ideas ranked by impact-to-effort ratio.
+
+### Idea 1: On-device email triage (Saturday afternoon)
+
+Take any iOS mail app. Add a \`LanguageModelSession\` that summarizes each new email in two sentences, classifies it into \"needs reply / FYI / junk,\" and surfaces it in a \"TL;DR\" view. Use guided generation to lock the output to a \`MailSummary\` struct. Ship it to TestFlight by Sunday.
+
+### Idea 2: Photo-to-recipe (Saturday evening)
+
+Take any photo library app. Use the new image-understanding API to extract ingredients from a photo of a fridge, then generate a recipe from those ingredients. The model runs locally --- no food photos leave the device. Great for privacy-conscious users.
+
+### Idea 3: A local coding agent (Sunday)
+
+The fm CLI + Python SDK make this a weekend project. Build a CLI tool that takes a natural-language description of a Swift function and emits working code, run through \`swift build\` to verify it compiles. Run it entirely on-device. The 20B sparse model handles Swift surprisingly well.
+
+All three ship without a backend, without a subscription, and without leaking user data. That combination was impossible six months ago.
+
+## 9. The Verdict
+
+Apple\'s third-generation foundation models are the most important SDK update of the decade for iOS developers. A 20B-parameter sparse model now runs locally on an iPhone. The Foundation Models framework finally has image understanding, agentic primitives, and a Python SDK. And the bring-your-own-provider protocol means you\'re no longer locked into Apple\'s models.
+
+The question isn\'t whether on-device AI is ready for production apps. It is. The question is what you\'re going to build with it.
+
+Xcode 27 is available today as a developer beta. The public release ships in September alongside iOS 27. The clock starts now.
+
+**Cover Image**
+
+![](./tmp_extracted/afm3/media/image1.jpg){width="5.5in" height="3.09375in"}
