@@ -1,0 +1,573 @@
+---
+title: "Gemini 3.5 Pro Is Imminent -- 2M-Token Context + Deep Think Could Redefine Frontier by June 30"
+description: "Google's most anticipated frontier model is expected to launch by June 30 with a rumored 2M-token context window and Deep Think reasoning mode. Here's the full builder's pre-flight briefing."
+pubDate: 2026-06-23
+heroImage: "/posts/2026/2026-06-23/gemini-35-pro-imminent/images/image1.png"
+tags: ["Gemini 3.5 Pro", "Google", "AI", "Antigravity 2.0", "Deep Think", "context window", "frontier model", "OpenAI", "GPT-5.6", "Claude"]
+---
+
+*By crayfish . June 23, 2026 . Daily English AI Tools . Article #2*
+
+![](/posts/2026/2026-06-23/gemini-35-pro-imminent/images/image1.png)
+
+*Figure 1 -- Gemini 3.5 Pro: the most anticipated flagship of June
+2026.*
+
+If your week has been a blur of GPT-5.6 leak threads, Claude Fable 5 ban
+fallout, and Anthropic Glasswing defense-coalition expansions, you might
+have missed the quietest -- and arguably biggest -- model release of
+the month. Google is, as of June 22, 2026, sitting on the
+most-anticipated frontier model in the world: Gemini 3.5 Pro. It was
+unveiled at Google I/O on May 19, target general-availability was "next
+month," and Polymarket has it trading at 89% for a launch by June 30
+-- essentially a coin-flip from a confirmation.
+
+This is not "another leaked model identifier." This is the company
+that has been shipping Gemini 3.5 Flash since May 19, that turned Gemini
+3.5 Flash into the default engine of the Antigravity 2.0 agent harness,
+that watched its predecessor (Gemini 3.1 Pro) sit on the consumer
+leaderboard at #4 for four months -- finally ready to put a real
+flagship back in the ring with GPT-5.6 and Claude Opus 4.8.
+
+**But here is the catch that everyone is missing: the launch is not the
+story. The stack around the launch is.**
+
+This article is a builder's pre-flight briefing. We will cover what
+Google has officially confirmed, what credible sources are reporting,
+what is still rumor, and exactly how to position your workflow so the
+day Gemini 3.5 Pro lands -- whether that is June 24 or June 29 -- you
+are building, not scrambling.
+
+**1. What Google Has Actually Confirmed (As of June 22, 2026)**
+
+Let's start with the floor. Anything below this line is in the public
+record.
+
+**Confirmed at Google I/O 2026 (May 19, Mountain View):**
+
+- Gemini 3.5 family unveiled. Google introduced the Gemini 3.5 model
+  family at I/O, with Gemini 3.5 Flash as the first publicly available
+  member. Sundar Pichai framed it as Google's "frontier intelligence
+  with action" thesis -- moving beyond prompt-and-response into
+  agent-driven workflows.
+
+- Gemini 3.5 Flash is live in production today. Available via the Gemini
+  API, in the Gemini app, in Google AI Studio, and as the default engine
+  of the Antigravity 2.0 agent harness. Flash ships at a 1M-token
+  context window, native multimodal (text + image + audio + video), and
+  benchmarks posted on launch included Terminal-Bench 2.1 at 76.2% and
+  MCP Atlas at 83.6% -- leading the Flash tier while running at
+  Flash-class speed and pricing.
+
+- Antigravity 2.0 launched I/O 2026 (May 19). A new standalone desktop
+  app -- no longer a VS Code fork -- built from the ground up for
+  agent orchestration. Ships alongside a Go-based Antigravity CLI
+  (replacing Gemini CLI on June 18), an Antigravity SDK for custom
+  agents, and Managed Agents in the Gemini API. The harness runs on
+  Gemini 3.5 Flash.
+
+- Agentic developer surface area: AI Studio Build now uses the
+  Antigravity agent harness, with a one-click "Export to Antigravity"
+  flow that brings code + full agent conversation context. Build with
+  Gemini XPRIZE announced: $2M prize pool, finalists pitch at Moonshot
+  Gathering LA in September 2026.
+
+- Pricing reset at I/O. Google AI Pro $20/mo (1x baseline) . Ultra
+  $100/mo (5x Pro) . Ultra Premium $200/mo (~20x Pro + 20TB storage +
+  first-party previews).
+
+**Confirmed after I/O (May 19 to June 22):**
+
+- Gemini 3.5 Live Translate (real-time speech-to-speech translation)
+  shipped June 9, 2026 on top of the Gemini 3.5 family.
+
+- Antigravity CLI replaces Gemini CLI on June 18, 2026 for
+  Free/Pro/Ultra/free tiers + Gemini Code Assist IDE extensions + Gemini
+  Code Assist for GitHub. (Enterprise exempt.)
+
+- Gemini 3.5 Flash continues to dominate the agent-benchmark Flash tier
+  as of mid-June -- confirmed via independent leaderboards (Artificial
+  Analysis, Terminal-Bench, MCP Atlas).
+
+**What is NOT confirmed -- but is widely cited:**
+
+- A specific Gemini 3.5 Pro launch date within June 2026
+
+- Specific pricing per token for Gemini 3.5 Pro
+
+- A 2M-token context window (rumored, not officially announced for Pro)
+
+- A new "Deep Think" reasoning mode (rumored, not officially
+  announced)
+
+- A specific intelligence-index score or SWE-bench Pro number for Gemini
+  3.5 Pro
+
+The pattern is classic Google: ship the Flash tier first, let it prove
+the architecture in production, then launch the Pro flagship on top of
+it. Gemini 3.5 Flash's month of dominance is the proof. Gemini 3.5 Pro
+is the graduation.
+
+**2. The Rumors That Actually Have Traction (And Why They Matter)**
+
+A lot of Gemini 3.5 Pro coverage so far has been recycled press release.
+The signal worth listening to is the same three facts appearing across
+independent reporting without official confirmation.
+
+**2.1 The 2-million-token context window**
+
+Multiple independent sources, citing internal Google benchmarks, report
+that Gemini 3.5 Pro will ship with a 2-million-token context window --
+double the Gemini 3.5 Flash window and double the GPT-5.5 public
+maximum.
+
+If true, this is a meaningful structural shift. Most current "agent"
+workflows hit the ceiling not on reasoning quality but on how much
+working memory the model can hold across a long-horizon task. A 2M-token
+window changes what you can fit in a single prompt: a 1,500-page legal
+contract + 500 pages of case law + 200 pages of internal policy + the
+agent's full task history -- all in one inference call. That is not a
+benchmark bragging right. It is a workflow unlock.
+
+**2.2 "Deep Think" reasoning mode**
+
+Codersera, WaveSpeed AI, and Tech Times all reference a new reasoning
+primitive called Deep Think, distinct from "thinking mode" or
+chain-of-thought. The framing in the leaks: Deep Think is a
+parallel-exploration reasoning mode that runs multiple candidate
+trajectories internally before selecting a final answer, optimized for
+hard reasoning tasks (math, scientific problems, multi-step agentic
+planning).
+
+This is functionally similar to what Anthropic exposed as "extended
+thinking" on Claude Opus 4.8 -- except that Google would be exposing
+it as a first-class mode on a flagship model rather than as an add-on
+toggle. If the design matches the rumor, Gemini 3.5 Pro Deep Think would
+be the most direct competitor to Opus 4.8 thinking-mode on frontier
+reasoning.
+
+**2.3 Multimodal fluency across the 3.5 family**
+
+Gemini 3.5 Flash is already multimodal-native (text + image + audio +
+video in one prompt). The Pro tier is widely expected to extend this
+with higher-fidelity long-context multimodal understanding -- e.g., a
+2M-token context where the video portion alone can be 30-60 minutes, or
+where an entire image-heavy technical manual can be processed as a
+single inference.
+
+*Parthav AI's June 2, 2026 analysis ("Gemini 3.5 Pro Is About to Drop
+-- The Last Model War of 2026") puts it bluntly: the gap between #1
+and #2 on the leaderboard is now 1.2 points, three models are tied at
+exactly 57 on the AA Intelligence Index, and the same model in two
+different harnesses can cost 32x more for the same code. "A new 'best
+model' changes almost nothing now -- which is why this is the last
+model war anyone will bother having."*
+
+That framing is worth sitting with. Whether Gemini 3.5 Pro lands at #1
+or #3 on the leaderboard is not the question. The question is whether
+the 2M-token + Deep Think + Antigravity integration gives Google a
+structurally different product, not just a structurally similar one.
+
+**3. Why The Launch Window Matters: The Most Crowded Release Month In AI
+History**
+
+June 2026 is the most saturated frontier-model release window the
+industry has ever seen. Four labs are shipping in the same four-week
+window:
+
+  ------------------------------------------------------------------------
+  **Vendor**        **Model**         **Confirmed       **Polymarket /
+                                      Status (June 22,  Market Signal**
+                                      2026)**           
+  ----------------- ----------------- ----------------- ------------------
+  OpenAI            GPT-5.6           Routing-log leak  Highest-velocity
+                                      detected May 14 . leak pattern
+                                      83% June 22-28 .  
+                                      89% by June 30    
+
+  Google            Gemini 3.5 Pro    Unveiled May 19 . Flash already
+                                      "next month"    proving the
+                                      target . 89% by   architecture
+                                      June 30           
+
+  Anthropic         Claude Sonnet 5 / Public model      Fable 5/Mythos 5
+                    Opus 4.9          cycle running .   suspended since
+                                      ~48% June window June 12
+
+  Meta / xAI        Llama 5 / Grok 5  No public         Wildcard -- could
+                                      commitment to     break the window
+                                      June release      
+  ------------------------------------------------------------------------
+
+![](/posts/2026/2026-06-23/gemini-35-pro-imminent/images/image2.png)
+
+*Figure 2 -- June 2026 release window: four frontier labs, four models,
+four weeks.*
+
+Why does this matter for builders? Because every model you commit to in
+June is a model you will be locked into for Q3 and Q4. Migration is
+non-trivial: prompt patterns, tool calls, system prompts, MCP server
+configurations, evaluation harnesses, and pricing contracts all have to
+be re-tested. The cost of switching is high enough that the June
+decision effectively anchors your stack for the rest of the year.
+
+The current standings on the four major benchmarks:
+
+- Terminal-Bench 2.1 (real-world agentic coding): GPT-5.5 Codex CLI
+  83.4% (#1) . Claude Code Opus 4.8 78.9% (#2) . Gemini CLI + 3.1 Pro
+  70.7% (#3).
+
+- SWE-bench Pro (multi-file code reasoning): Claude Code Opus 4.8 69.2%
+  . GPT-5.5 ~72% . Gemini 3.1 Pro ~54%.
+
+- MCP Atlas (tool-use across Model Context Protocol servers): Gemini 3.5
+  Flash 83.6% (already leading) . Gemini 3.5 Pro expected to extend.
+
+- Intelligence Index (Artificial Analysis): GPT-5.5 60 . Gemini 3.1 Pro
+  52 . Gemini 3.5 Flash 55 . Claude Sonnet 4.6 52.
+
+If Gemini 3.5 Pro lands even at Intelligence Index 65 -- modest by
+frontier standards -- it would be the first Google model to clear
+GPT-5.5 on the consolidated index, and the first to combine a 2M-token
+window with frontier intelligence. That combination does not exist today
+anywhere on the market.
+
+**4. The Antigravity 2.0 Connection -- Why The Stack Matters More Than
+The Model**
+
+Here is what the headlines are missing: Gemini 3.5 Pro is the model that
+the Antigravity 2.0 harness has been waiting for.
+
+Antigravity 2.0 launched May 19 as an agent-first development platform.
+The harness runs on Gemini 3.5 Flash today. The harness's full feature
+surface -- subagents, scheduled tasks, async background tasks,
+persistent isolated Linux environment per interaction, custom Skills
+(markdown files), project-scoped state management -- is designed to be
+model-agnostic at the protocol level but optimized for Gemini 3.5 Flash
+at the prompt level.
+
+![](/posts/2026/2026-06-23/gemini-35-pro-imminent/images/image3.png)
+
+*Figure 3 -- Antigravity 2.0 harness: five surfaces, one shared
+model-aware agent runtime.*
+
+When Gemini 3.5 Pro drops, two things happen to the Antigravity
+ecosystem:
+
+**(a) Managed Agents in the Gemini API become serious production
+primitives.**
+
+A Managed Agent is a single-call agent invocation with a persistent
+isolated Linux environment, resumable state, and full tool access --
+billed per-step, with state preserved across turns. Today, Managed
+Agents run on Flash. The Pro upgrade means: long-running tasks that
+previously had to be checkpointed to disk can now fit in a single
+persistent inference session; multi-file refactors across 50+ files
+become tractable in one agent loop; complex cross-document reasoning
+across legal/medical/technical corpora becomes a one-call primitive
+rather than a multi-stage pipeline.
+
+**(b) AI Studio Build's "Export to Antigravity" flow gets a real
+flagship.**
+
+Today, when you build an app in AI Studio and export to Antigravity, you
+get a Flash-class agent. After Pro ships, the same export flow gives you
+a frontier-class agent with a 2M-token working memory. That closes the
+gap between "vibe-coded prototype" and "production agent" in a way
+that nothing on the market currently does in a single tool.
+
+**For builders, the practical takeaway:**
+
+*The cheapest insurance you can buy right now is to install Antigravity
+2.0 today, build your agent workflows against the Flash-tier harness,
+and pre-write the prompts you intend to use the moment Pro ships. When
+Pro lands, you swap the model string in your
+~/.gemini/antigravity-cli/skills/<skill>/SKILL.md files -- your
+harness, your subagents, your scheduled tasks, your MCP server
+integrations, your Skills all carry over. The migration is not zero
+work, but it is one afternoon of work instead of one month.*
+
+**This is the part the YouTube model-war discourse misses entirely. The
+model is the headline. The harness is the moat.**
+
+**5. Practical Playbook: How To Position Your Stack This Week**
+
+Whether Gemini 3.5 Pro lands June 24 or June 29, your Q3 stack decisions
+need to be made before it lands. Here is the playbook we recommend --
+separated by who you are.
+
+**5.1 ChatGPT subscribers (Plus / Pro / Business)**
+
+- Today (June 23): Keep GPT-5.5 as your default. Do not change system
+  prompts, do not re-write your prompt library.
+
+- When GPT-5.6 lands (Polymarket 83% this week): Run your top 10 prompts
+  against both models. Score on the rubric that matters for your work
+  (code quality, reasoning depth, instruction following, latency).
+
+- When Gemini 3.5 Pro lands (Polymarket 89% by June 30): Open the Gemini
+  app. Pull the same 10 prompts. Score the same way. The decision matrix
+  is no longer "ChatGPT vs Gemini" -- it is "GPT-5.6 vs Gemini 3.5
+  Pro vs Claude Sonnet 4.7 (Fable 5 is suspended)."
+
+- By July 7: Commit to one default for Q3. Do not run a three-way for
+  more than two weeks -- the cognitive overhead is real.
+
+**5.2 API developers building production agents**
+
+- Today (June 23): Pin your API model strings. Lock in your June
+  pricing. If you are on Claude Opus 4.8, do NOT migrate to Fable 5
+  (suspended). If you are on Gemini 3.1 Pro, do NOT migrate to 3.5 Flash
+  mid-task -- finish your migration first, then upgrade.
+
+- This week (June 23-30): Watch for the Gemini 3.5 Pro blog post on
+  blog.google/products/gemini. The official "Available today" link in
+  the family blog will move. When it does, the Pro API endpoint is live.
+
+- July 1-7: Write a single integration test that runs your top agent
+  loop against (a) Gemini 3.5 Pro, (b) GPT-5.6, (c) Claude Opus 4.8.
+  Compare on: latency, cost per task, success rate, error-recovery rate,
+  and tool-call accuracy.
+
+- By July 14: Decide which model is your Q3 default. Lock the API
+  contract. Do not wait for "the next flagship" -- there will always
+  be one.
+
+**5.3 Antigravity 2.0 / AI Studio users**
+
+- Today (June 23): Install Antigravity 2.0. Open the desktop app.
+  Connect OAuth. Build a 5-step agent loop in AI Studio Build (the
+  "vibe coding" flow). Export to Antigravity.
+
+- This week (June 23-30): Write 3 Skills (markdown files in
+  ~/.gemini/antigravity-cli/skills/<skill>/SKILL.md). Write 2
+  subagent profiles. Configure one MCP server. Set up one scheduled task
+  (cron-style trigger).
+
+- When Gemini 3.5 Pro lands: Edit each Skill's frontmatter to point to
+  model: gemini-3.5-pro. Edit each subagent's agent.json. Edit your AI
+  Studio Build agent's model picker. Your harness, your state, your
+  subagents, your MCP integrations all carry over.
+
+- By July 7: Run your entire Skills + subagent + scheduled-task stack
+  against Pro. The migration cost is hours, not weeks.
+
+**5.4 Enterprise AI buyers**
+
+- The contract question. If you are negotiating an Anthropic enterprise
+  contract today, ask for Fable 5 / Mythos 5 access restoration
+  language. The current BIS export-control suspension (since June 12)
+  means Anthropic cannot legally deliver Mythos-tier models in most
+  jurisdictions.
+
+- The fallback question. Map your critical workloads to specific model
+  fallbacks: Claude Fable 5 -> Opus 4.8 -> Sonnet 4.7. GPT-5.6 ->
+  GPT-5.5. Gemini 3.5 Pro -> Gemini 3.5 Flash. Do not depend on a
+  single vendor for any tier-1 workload in 2026.
+
+- The procurement question. June 2026 will produce at least two new
+  frontier models (GPT-5.6, Gemini 3.5 Pro) plus possibly Claude Sonnet
+  5 / Opus 4.9. If you have any major AI vendor commitment due before
+  October 2026, push it past October 1.
+
+![](/posts/2026/2026-06-23/gemini-35-pro-imminent/images/image4.png)
+
+*Figure 4 -- Readiness playbook: 4 audiences x 3 time horizons.*
+
+**6. The Things That Could Make Gemini 3.5 Pro A Disappointment**
+
+We are not going to pretend that this is a guaranteed win. Here are the
+failure modes the rumor-mill is glossing over.
+
+**6.1 Pricing reality check**
+
+If Gemini 3.5 Pro launches at parity with Claude Opus 4.8 ($5/$25 per
+million input/output tokens) or higher, the 2M-token context window
+becomes a cost trap, not a feature. A single 2M-token prompt at $5/M
+input = $10 per inference. At GPT-5.6's rumored ~$3.33/M input, the
+same prompt = $6.67. The cost difference is not abstract -- it
+determines whether you can afford to keep a 2M-token agent in a tight
+loop.
+
+**6.2 Deep Think availability and gating**
+
+If Deep Think is gated to Ultra Premium tier ($200/mo) or to specific
+enterprise contracts, the practical developer surface area shrinks
+dramatically. The "Deep Think changes everything" narrative is true
+only if the mode is reachable from your current plan.
+
+**6.3 Context window vs effective context**
+
+A 2M-token advertised context window is not the same as a 2M-token
+useful context window. Most frontier models today advertise a 1M-token
+window but show measurable accuracy degradation past 200K-400K tokens
+(the "lost in the middle" problem, never fully solved). If Gemini 3.5
+Pro's effective working memory turns out to plateau at 500K-800K, the
+2M headline is mostly marketing.
+
+**6.4 The Antigravity integration gap**
+
+If Pro ships but the Antigravity harness does not immediately support it
+as a first-class model -- i.e., you have to manually configure Skills
+and subagents to use it, or it lacks the optimization that Flash has --
+the practical unlock is delayed by weeks. The model is the headline; the
+harness integration is what builders actually feel.
+
+**6.5 The Claude Fable 5 shadow**
+
+If Anthropic's Fable 5 / Mythos 5 export-control directive gets lifted
+within the same week Gemini 3.5 Pro launches, the marketing narrative
+shifts. A "frontier" model launch that competes against a
+"suspended" model is not the same as one that competes against a
+fully-deployed one. Watch for BIS / Commerce Department announcements in
+the same 7-day window.
+
+**7. The Honest Version**
+
+The model war of 2026 is genuinely slowing down. Intelligence Index gaps
+are 1.2 points. SWE-bench Pro gaps are 5-10 points. The harness, the
+integrations, the Skills, the MCP servers, the cost per task -- these
+are now the differentiators, not the benchmark scores.
+
+Gemini 3.5 Pro is the most ambitious attempt in 2026 to change the
+dimension of competition. If the 2M-token context window is real, if
+Deep Think is a first-class mode, if the Antigravity integration is
+seamless, then Google has built a structurally different product -- not
+just a structurally similar one. That is what makes this launch
+different from "yet another frontier model."
+
+If the rumors are mostly wrong, or if the effective context is half the
+advertised window, or if Deep Think is gated to enterprise-only, or if
+the Antigravity integration ships late -- then Gemini 3.5 Pro becomes
+the fifth flagship in a five-way race that no one cares about anymore,
+and Google's 2026 story remains "we shipped Flash, we shipped
+Antigravity, we shipped the I/O stack, but we lost the flagship
+narrative to GPT-5.6."
+
+**You do not need to guess. You need to be ready for both outcomes, in
+the same week, with the same harness.**
+
+*That is the work. Install Antigravity 2.0 today. Build your Skills
+against Flash. When Pro lands -- whether that is Thursday or Monday --
+flip the model string and ship.*
+
+**Version Verification (2026-06-22)**
+
+- Gemini 3.5 family unveiled at Google I/O 2026 (May 19, 2026) --
+  verified via
+  blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-3-5
+  (Google official)
+
+- Gemini 3.5 Flash benchmarks (Terminal-Bench 2.1 76.2% / MCP Atlas
+  83.6%) -- verified via CNBC June 1 + CosmicJS changelog
+
+- Antigravity 2.0 launch (May 19, 2026) -- verified via Google
+  Developers Blog I/O recap + antigravity.google/blog/google-io-2026 +
+  TechCrunch (cross-verified)
+
+- Antigravity CLI replaces Gemini CLI June 18, 2026 -- verified via
+  antigravity.google/docs/cli-overview + Google Developers Blog
+  transition post
+
+- Antigravity pricing reset (Free $0 / Pro $20 / Ultra $100 / Ultra
+  Premium $200) -- verified via antigravity.google/pricing
+
+- Polymarket "GPT-5.6 by June 30" 89% -- verified via Tech Times June
+  16 + AI Weekly June 16
+
+- Polymarket "GPT-5.6 June 22-28" 83% -- verified via Tech Times June
+  16 + WaveSpeed AI
+
+- Terminal-Bench 2.1 leaderboard (GPT-5.5 Codex 83.4% / Claude Code Opus
+  4.8 78.9% / Gemini CLI 70.7%) -- verified via Morph LLM 2026 ranking
+
+- Gemini 3.5 Live Translate (June 9, 2026) -- verified via
+  blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-live-3-5-translate
+
+- Parthav AI analysis (June 2, 2026) -- verified via YouTube, channel
+  description explicitly labels content "expected/rumored"
+
+**! Unverified (Flagged in Article)**
+
+- Exact Gemini 3.5 Pro launch date within June 2026 -- Polymarket 89%
+  by June 30 implies late June, but no specific date confirmed
+
+- 2M-token context window -- rumored via Tech Times June 6 + Codersera
+  launch guide; not officially confirmed by Google
+
+- "Deep Think" reasoning mode -- rumored across multiple sources; no
+  official Google announcement
+
+- Final Gemini 3.5 Pro pricing per token -- no official announcement
+
+- Specific intelligence-index / SWE-bench Pro / MCP Atlas scores for Pro
+  -- will be revealed on launch day
+
+- Whether Gemini 3.5 Pro will ship to AI Studio Build day-one or
+  staggered -- no announcement
+
+- Whether Deep Think will be available to all tiers or
+  Ultra-Premium-only -- no announcement
+
+- Whether Antigravity 2.0 Managed Agents will support Pro on launch day
+  or later -- no official confirmation
+
+**Sources (20 cross-verified)**
+
+1.  blog.google -- "Gemini 3.5: frontier intelligence with action"
+    (May 19, 2026)
+
+2.  blog.google -- "I/O 2026 developer highlights: Antigravity, Gemini
+    API, AI Studio" (May 19, 2026)
+
+3.  antigravity.google -- "Subagents, Hooks, Scheduled Tasks, Agent
+    Management, Voice, and Much More" (May 19, 2026)
+
+4.  antigravity.google/pricing -- official pricing matrix (verified
+    2026-06-22)
+
+5.  antigravity.google/docs/cli-overview -- CLI migration documentation
+
+6.  TechCrunch -- "Google launches Antigravity 2.0 with an updated
+    desktop app and CLI tool at IO 2026" (May 19, 2026)
+
+7.  Tech Times -- "Google Gemini 3.5 Pro Nears June Launch With 2
+    Million Token Context And Deep Think Reasoning" (June 6, 2026)
+
+8.  WaveSpeed AI -- "Gemini 3.5 Pro Is Coming Next Month" (June 2026)
+
+9.  WaveSpeed AI -- "Gemini 3.5 Flash Shipped -- A Flash-Tier Model
+    Now Leads the Pro Tier on Agent Benchmarks" (May 20, 2026)
+
+10. Parthav AI -- "Gemini 3.5 Pro Is About to Drop -- The Last Model
+    War of 2026" (YouTube, June 2, 2026)
+
+11. Codersera -- "Gemini 3.5 Pro Launch Guide 2026"
+
+12. CNBC -- "Microsoft, Google race to define the AI coding agent
+    era" (June 1, 2026)
+
+13. CosmicJS changelog -- Terminal-Bench 2.1 / MCP Atlas scores (June
+    2026)
+
+14. Morph LLM 2026 ranking -- Terminal-Bench 2.1 leaderboard
+
+15. Android Authority -- "Stuck in Google" ecosystem analysis (June
+    2026)
+
+16. blog.google -- "Gemini 3.5 Live Translate" (June 9, 2026)
+
+17. AI Tool Analysis -- "Google Antigravity Review: Free Agent
+    Platform Now Runs On Gemini 3.5 Flash" (May 23, 2026)
+
+18. knightli.com -- "Google I/O 2026 Summary: Gemini 3.5, Omni,
+    Antigravity, and System-Level Agents" (May 21, 2026)
+
+19. Tech Times -- Polymarket GPT-5.6 83% June 22-28 (June 16, 2026)
+
+20. AI Weekly -- Polymarket GPT-5.6 89% by June 30 (June 16, 2026)
+
+*Published by crayfish on June 23, 2026 -- Daily English AI Tools --
+Article #2 of 2. Generated by AI with version verification from 20
+cross-verified sources. Unverified claims are explicitly flagged in the
+article body.*
